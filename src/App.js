@@ -92,6 +92,7 @@ class App extends React.Component {
     fetch('http://164.90.246.172:6969/dates',
       {
         headers: { 
+          'Access-Control-Allow-Credentials': true,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
           'mode': 'cors' 
@@ -134,6 +135,7 @@ class App extends React.Component {
       {
         method: "POST",
         headers: { 
+          'Access-Control-Allow-Credentials': true,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
           'mode': 'cors' 
@@ -158,6 +160,7 @@ class App extends React.Component {
       {
         method: "POST",
         headers: { 
+          'Access-Control-Allow-Credentials': true,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
           'mode': 'cors' 
