@@ -93,7 +93,7 @@ class App extends React.Component {
       {
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "//137.184.42.175:6969",
+          'Access-Control-Allow-Origin': "//164.90.246.172:6969",
           'mode': 'cors' 
         },
       })
@@ -135,7 +135,7 @@ class App extends React.Component {
         method: "POST",
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "//137.184.42.175:6969",
+          'Access-Control-Allow-Origin': "//164.90.246.172:6969",
           'mode': 'cors' 
         },
         body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
@@ -159,7 +159,7 @@ class App extends React.Component {
         method: "POST",
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "//137.184.42.175:6969",
+          'Access-Control-Allow-Origin': "//164.90.246.172:6969",
           'mode': 'cors' 
         },
         body: JSON.stringify({date: d.toISOString().split('T')[0]})
