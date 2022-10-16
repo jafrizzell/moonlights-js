@@ -89,11 +89,11 @@ class App extends React.Component {
 
   fetchValidDates() {
     const validDates = [];
-    fetch('//164.90.246.172:6969/dates',
+    fetch('http://164.90.246.172:6969/dates',
       {
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "//164.90.246.172:6969",
+          'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
           'mode': 'cors' 
         },
       })
@@ -130,12 +130,12 @@ class App extends React.Component {
     if (typeof d != Date) {
       d = new Date(d);
     };
-    fetch('//164.90.246.172:6969/fetch', 
+    fetch('http://164.90.246.172:6969/fetch', 
       {
         method: "POST",
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "//164.90.246.172:6969",
+          'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
           'mode': 'cors' 
         },
         body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
@@ -154,12 +154,12 @@ class App extends React.Component {
   };
   
   fetchTopEmotes(d) {
-    fetch('//164.90.246.172:6969/topEmotes',
+    fetch('http://164.90.246.172:6969/topEmotes',
       {
         method: "POST",
         headers: { 
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "//164.90.246.172:6969",
+          'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
           'mode': 'cors' 
         },
         body: JSON.stringify({date: d.toISOString().split('T')[0]})
