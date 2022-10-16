@@ -1,0 +1,100 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #121212;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.container {
+  padding: 12px;
+  padding-left: 10%;
+  padding-right: 10%;
+  display: flex;
+}
+
+.dpicker {
+  background-color: #121212;
+  width: 128px;
+  border: 2px solid #eaeef2;
+  border-radius: 6px;
+  
+  /* height: 44px; */
+  /* padding: 0px; */
+}
+
+.epicker {
+  padding-left: 12px;
+  flex: 1;
+}
+@import 'node_modules/react-datepicker/src/stylesheets/datepicker.scss';
+
+.react-datepicker__input-container { 
+  padding-top: 4px;
+  padding-left: 4px;
+}
+
+.react-datepicker__input-container input {
+    height: 31.2px;
+    padding-top: 0px;
+    padding: 0px;
+    text-align: center;
+    font-size: 1em;
+    line-height: 1.2;
+    width: 120px;
+    border-width: 0px;
+    border-color: #eaeef2;
+    background-color: #eaeef2;
+    border-radius: 2px;
+  
+}
+
+.react-datepicker__month-container {
+  background-color: #383838;
+  color: #3463b4;
+  font-size: 1rem;
+  font-family: 'Mulish';
+
+  .react-datepicker__month {
+    padding: 1rem 0;
+    &--selected {
+      border: 0px solid black;
+    }
+  }
+
+  .react-datepicker__month-text {
+    display: inline-block;
+    width: 5rem;
+    margin: 0.5rem;
+    font-size: 1rem;
+    padding: 0.2rem;
+    &:hover {
+      background-color: #54538C;
+    }
+    &--disabled {
+      cursor: default;
+      color: orange;
+  
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }  
+  .react-datepicker__header {
+    text-align: center;
+    background-color: #383838;
+    color: #eaeef2;
+    border-bottom: 1px solid #eaeef2;
+    border-top-left-radius: $datepicker__border-radius;
+    padding: 8px 0;
+    position: relative;
+
+  }
+}
