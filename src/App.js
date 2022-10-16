@@ -89,7 +89,7 @@ class App extends React.Component {
 
   fetchValidDates() {
     const validDates = [];
-    fetch('http://164.90.246.6969/dates', {headers:{'Access-Control-Allow-Origin': '*'}})
+    fetch('http://164.90.246:6969/dates', {headers:{'Access-Control-Allow-Origin': '*'}})
       .then((res) => res.json())
       .then((data) => {
         if (validDates.length === 0) {
