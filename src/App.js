@@ -89,9 +89,10 @@ class App extends React.Component {
 
   fetchValidDates() {
     const validDates = [];
-    fetch('//164.90.246.172:6969/dates',
+    fetch('http://164.90.246.172:6969/dates',
       {
         headers: { 
+          'mode': 'no-cors',
           'Access-Control-Allow-Origin': '*',
         },
       })
