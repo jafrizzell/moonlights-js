@@ -127,6 +127,9 @@ class App extends React.Component {
       {
         method: "POST",
         body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
     ).then((res) => res.json())
       .then((data) => {
@@ -147,10 +150,9 @@ class App extends React.Component {
       {
         method: "POST",
         body: JSON.stringify({date: (d.toISOString().split('T')[0])}),
-        // headers: {
-        //   'mode': 'cors',
-        //   'Allow-Control-Access-Origin': '*',
-        // },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
     )
       .then((res) => res.json())
