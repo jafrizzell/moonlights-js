@@ -136,6 +136,7 @@ class App extends React.Component {
   };
 
   setDate(d) {
+    console.log(d);
     if (d) {
       this.setState({date: d}, () => this.fetchTopEmotes(d));
     }
