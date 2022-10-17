@@ -95,7 +95,7 @@ class App extends React.Component {
           'Access-Control-Allow-Credentials': 'true',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
+          'Access-Control-Allow-Origin': 'http://164.90.246.172:6969',
           'mode': 'cors' 
         },
       })
@@ -139,7 +139,7 @@ class App extends React.Component {
           'Access-Control-Allow-Credentials': 'true',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
+          'Access-Control-Allow-Origin': 'http://164.90.246.172:6969',
           'mode': 'cors' 
         },
         body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
@@ -165,7 +165,7 @@ class App extends React.Component {
           'Access-Control-Allow-Credentials': 'true',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "http://164.90.246.172:6969",
+          'Access-Control-Allow-Origin': 'http://164.90.246.172:6969',
           'mode': 'cors' 
         },
         body: JSON.stringify({date: d.toISOString().split('T')[0]})
