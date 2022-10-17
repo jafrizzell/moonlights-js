@@ -91,10 +91,9 @@ class App extends React.Component {
     const validDates = [];
     fetch('http://164.90.246.172:6969/dates',
       {
-        headers: { 
-          'mode': 'no-cors',
-          'Access-Control-Allow-Origin': '*',
-        },
+        // headers: { 
+        //   'Access-Control-Allow-Origin': '*',
+        // },
       })
       .then((res) => res.json())
       .then((data) => {
@@ -132,9 +131,9 @@ class App extends React.Component {
     fetch('164.90.246.172:6969/fetch', 
       {
         method: "POST",
-        headers: { 
-          'Access-Control-Allow-Origin': '*',
-        },
+        // headers: { 
+        //   'Access-Control-Allow-Origin': '*',
+        // },
         body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
       }
     ).then((res) => res.json())
@@ -154,9 +153,9 @@ class App extends React.Component {
     fetch('164.90.246.172:6969/topEmotes',
       {
         method: "POST",
-        headers: { 
-          'Access-Control-Allow-Origin': '*',
-        },
+        // headers: { 
+        //   'Access-Control-Allow-Origin': '*',
+        // },
         body: JSON.stringify({date: d.toISOString().split('T')[0]})
       },
     )
