@@ -89,12 +89,7 @@ class App extends React.Component {
 
   fetchValidDates() {
     const validDates = [];
-    fetch('http://164.90.246.172:6969/dates',
-      {
-        // headers: { 
-        //   'Access-Control-Allow-Origin': '*',
-        // },
-      })
+    fetch('http://164.90.246.172:6969/dates')
       .then((res) => res.json())
       .then((data) => {
         if (validDates.length === 0) {
@@ -128,7 +123,7 @@ class App extends React.Component {
     if (typeof d != Date) {
       d = new Date(d);
     };
-    fetch('164.90.246.172:6969/fetch', 
+    fetch('http://164.90.246.172:6969/fetch', 
       {
         method: "POST",
         // headers: { 
@@ -150,7 +145,7 @@ class App extends React.Component {
   };
   
   fetchTopEmotes(d) {
-    fetch('164.90.246.172:6969/topEmotes',
+    fetch('http://164.90.246.172:6969/topEmotes',
       {
         method: "POST",
         // headers: { 
