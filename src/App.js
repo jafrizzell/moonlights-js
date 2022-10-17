@@ -37,7 +37,8 @@ export const options = {
       },
       ticks: {
         color: '#eaeef2',
-        padding: 6,
+        tickLength: 15,
+        padding: 100,
       }
     },
     xAxes: {
@@ -58,7 +59,8 @@ export const options = {
         autoSkip: true,
         minRotation: 15,
         maxRotation: 15,
-        padding: 6,
+        tickLength: 15,
+        padding: 100,
       }
     }
   },
