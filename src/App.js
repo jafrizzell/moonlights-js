@@ -97,7 +97,6 @@ class App extends React.Component {
             validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
           };
         };
-        console.log(new Date(data.maxDate[0].stream_date+"T00:00:00"));
         this.setState({validDates: validDates}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
@@ -137,14 +136,13 @@ class App extends React.Component {
   };
 
   setDate(d) {
-    console.log(d);
     if (d) {
       this.setState({date: d}, () => this.fetchTopEmotes(d));
     }
   };
   
   fetchTopEmotes(d) {
-    console.log(d);
+    console.log(d.toISOString().split('T')[0]);
     fetch('http://164.90.246.172:6969/topEmotes',
       {
         method: "POST",
