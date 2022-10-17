@@ -92,7 +92,6 @@ class App extends React.Component {
     fetch('http://164.90.246.172:6969/dates')
       .then((res) => res.json())
       .then((data) => {
-        console.log(validDates);
         if (validDates.length === 0) {
           for (let i = 0; i < data.dates.length; i++) {
             validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
@@ -138,7 +137,7 @@ class App extends React.Component {
 
   setDate(d) {
     if (d) {
-      console.log('im here!', d);
+      console.log('im here!', this.state.validDates);
       this.setState({date: d}, () => this.fetchTopEmotes(d));
     }
   };
