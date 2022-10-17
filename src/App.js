@@ -137,15 +137,19 @@ class App extends React.Component {
 
   setDate(d) {
     if (d) {
-      console.log('im here!', this.state.validDates);
       this.setState({date: d}, () => this.fetchTopEmotes(d));
     }
   };
   
   fetchTopEmotes(d) {
+    console.log(d);
     fetch('http://164.90.246.172:6969/topEmotes',
       {
         method: "POST",
+        headers: {
+          'mode': 'cors',
+          'Allow-Control-Access-Origin': '*',
+        },
         body: JSON.stringify({date: d.toISOString().split('T')[0]})
       },
     )
