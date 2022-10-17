@@ -152,7 +152,7 @@
 }
 
 .react-tags__listbox-option[aria-disabled='true'] {
-  color: #7c7d86;
+  color: #b8bcbf;
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -167,9 +167,9 @@
 }
 
 .react-tags__suggestions li mark {
-  /* text-decoration: underline; */
+  text-decoration: underline;
   background: none;
   font-weight: normal; /* 600 */
   margin-right: -2px;
-  color: #89949B;
+  color: #383838;
 }

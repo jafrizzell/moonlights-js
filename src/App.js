@@ -38,6 +38,11 @@ export const options = {
       }
     },
     xAxes: {
+      label: {
+        display: true,
+        text: "Stream Timestamp",
+        color: '#eaeef2',
+      },
       grid: {
         color: '#54538C',
         borderColor: '#eaeef2',
