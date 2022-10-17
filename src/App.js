@@ -150,7 +150,8 @@ class App extends React.Component {
           'mode': 'cors',
           'Allow-Control-Access-Origin': '*',
         },
-        body: JSON.stringify({date: d.toISOString().split('T')[0]})
+        body: JSON.stringify({date: d})
+        // body: JSON.stringify({date: d.toISOString().split('T')[0]})
       },
     )
       .then((res) => res.json())
