@@ -133,7 +133,6 @@ class App extends React.Component {
       }
     ).then((res) => res.json())
       .then((data) => {
-        console.log(data.datasets);
         this.setState({type: 'line', chart: data.datasets, xlabels: data.labels}, () => null);
       });
   };
@@ -145,7 +144,6 @@ class App extends React.Component {
   };
   
   fetchTopEmotes(d) {
-    console.log(d.toISOString().split('T')[0]);
     fetch('https://164.90.246.172:6969/topEmotes',
       {
         method: "POST",
