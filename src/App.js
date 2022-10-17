@@ -184,7 +184,7 @@ class App extends React.Component {
               onAdd={this.onAddition.bind(this)}
               newOptionText={'%value%'}
               placeholderText={'Search for anything!'}
-              delimiterKeys = {['Enter']}
+              delimiterKeys = {['Enter', 'Tab']}
             />
           </div>
         </div>

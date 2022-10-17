@@ -101,6 +101,7 @@
   margin: 0;
   padding: 0;
   border: 0;
+  color: #eaeef2;
   outline: none;
   background: none;
   /* match the font styles */
@@ -163,4 +164,12 @@
 
 .react-tags__listbox-option[aria-selected='true']:not(.is-active)::after {
   color: #eaeef2;
+}
+
+.react-tags__suggestions li mark {
+  /* text-decoration: underline; */
+  background: none;
+  font-weight: normal; /* 600 */
+  margin-right: -2px;
+  color: #89949B;
 }
