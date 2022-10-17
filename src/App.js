@@ -92,12 +92,12 @@ class App extends React.Component {
     fetch('http://164.90.246.172:6969/dates')
       .then((res) => res.json())
       .then((data) => {
+        console.log(validDates);
         if (validDates.length === 0) {
           for (let i = 0; i < data.dates.length; i++) {
             validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
           };
         };
-        console.log(validDates);
         this.setState({validDates: validDates}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
