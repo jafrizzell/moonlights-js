@@ -146,11 +146,11 @@ class App extends React.Component {
     fetch('http://164.90.246.172:6969/topEmotes',
       {
         method: "POST",
-        headers: {
-          'mode': 'cors',
-          'Allow-Control-Access-Origin': '*',
-        },
-        body: JSON.stringify({date: d.toISOString().split('T')[0]}),
+        body: JSON.stringify({date: (d.toISOString().split('T')[0])}),
+        // headers: {
+        //   'mode': 'cors',
+        //   'Allow-Control-Access-Origin': '*',
+        // },
       },
     )
       .then((res) => res.json())
