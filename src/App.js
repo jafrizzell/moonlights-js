@@ -97,6 +97,7 @@ class App extends React.Component {
             validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
           };
         };
+        console.log(new Date(data.maxDate[0].stream_date+"T00:00:00"));
         this.setState({validDates: validDates}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
