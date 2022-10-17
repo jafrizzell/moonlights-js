@@ -89,14 +89,10 @@ class App extends React.Component {
 
   fetchValidDates() {
     const validDates = [];
-    fetch('http://164.90.246.172:6969/dates',
+    fetch('//164.90.246.172:6969/dates',
       {
         headers: { 
-          'Access-Control-Allow-Credentials': 'true',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://164.90.246.172:6969',
-          'mode': 'cors' 
+          'Access-Control-Allow-Origin': '*',
         },
       })
       .then((res) => res.json())
@@ -132,15 +128,11 @@ class App extends React.Component {
     if (typeof d != Date) {
       d = new Date(d);
     };
-    fetch('http://164.90.246.172:6969/fetch', 
+    fetch('164.90.246.172:6969/fetch', 
       {
         method: "POST",
         headers: { 
-          'Access-Control-Allow-Credentials': 'true',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://164.90.246.172:6969',
-          'mode': 'cors' 
+          'Access-Control-Allow-Origin': '*',
         },
         body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
       }
@@ -158,15 +150,11 @@ class App extends React.Component {
   };
   
   fetchTopEmotes(d) {
-    fetch('http://164.90.246.172:6969/topEmotes',
+    fetch('164.90.246.172:6969/topEmotes',
       {
         method: "POST",
         headers: { 
-          'Access-Control-Allow-Credentials': 'true',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://164.90.246.172:6969',
-          'mode': 'cors' 
+          'Access-Control-Allow-Origin': '*',
         },
         body: JSON.stringify({date: d.toISOString().split('T')[0]})
       },
