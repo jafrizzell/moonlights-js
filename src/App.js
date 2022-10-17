@@ -32,6 +32,8 @@ export const options = {
       grid: {
         color: '#54538C',
         borderColor: '#eaeef2',
+        drawTicks: false,
+        tickColor: '#eaeef2',
       },
       ticks: {
         color: '#eaeef2',
@@ -46,6 +48,8 @@ export const options = {
       grid: {
         color: '#54538C',
         borderColor: '#eaeef2',
+        drawTicks: false,
+        tickColor: '#eaeef2',
       },
       ticks: {
         color: '#eaeef2',
