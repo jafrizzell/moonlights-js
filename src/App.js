@@ -97,6 +97,7 @@ class App extends React.Component {
             validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
           };
         };
+        console.log(validDates);
         this.setState({validDates: validDates}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
@@ -137,6 +138,7 @@ class App extends React.Component {
 
   setDate(d) {
     if (d) {
+      console.log('im here!', d);
       this.setState({date: d}, () => this.fetchTopEmotes(d));
     }
   };
