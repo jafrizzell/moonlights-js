@@ -37,13 +37,15 @@ export const options = {
       },
       ticks: {
         color: '#eaeef2',
+        padding: 6,
       }
     },
     xAxes: {
-      label: {
+      title: {
         display: true,
         text: "Stream Timestamp",
         color: '#eaeef2',
+        padding: 8,
       },
       grid: {
         color: '#54538C',
@@ -56,6 +58,7 @@ export const options = {
         autoSkip: true,
         minRotation: 15,
         maxRotation: 15,
+        padding: 6,
       }
     }
   },
