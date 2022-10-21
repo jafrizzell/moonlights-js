@@ -1,4 +1,4 @@
-import React from "react";
+import { React } from 'react';
 import {ReactTags} from 'react-tag-autocomplete'
 import DatePicker from 'react-datepicker';
 import {Line} from 'react-chartjs-2';
@@ -101,13 +101,7 @@ class App extends React.Component {
     this.fetchValidDates();
   };
 
-  componentDidMount() {
-    setInterval(() => {
-      if (this.state.liveStream) {
-        this.fetchTopEmotes(this.state.date);
-      }
-    }, 30000)
-  }
+
 
   fetchValidDates() {
     const validDates = [];
