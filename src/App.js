@@ -88,7 +88,9 @@ class App extends React.Component {
       date: null,
       validDates: [],
       chart: [],
-      xlabels: []
+      xlabels: [],
+      liveStream: null,
+      username: 'MOONMOON',
     };
     this.setEmotes = this.setEmotes.bind(this);
     this.setDate = this.setDate.bind(this);
@@ -99,9 +101,24 @@ class App extends React.Component {
     this.fetchValidDates();
   };
 
+  componentDidMount() {
+    setInterval(() => {
+      if (this.state.liveStream) {
+        this.fetchTopEmotes(this.state.date);
+      }
+    }, 30000)
+  }
+
   fetchValidDates() {
     const validDates = [];
-    fetch('https://164.90.246.172:6969/dates')
+    fetch('https://164.90.246.172:6969/dates', 
+    {
+      method: "POST",
+      body: JSON.stringify({"username": this.state.username,}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         if (validDates.length === 0) {
@@ -109,7 +126,7 @@ class App extends React.Component {
             validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
           };
         };
-        this.setState({validDates: validDates}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
+        this.setState({validDates: validDates, liveStream: data.live}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
 
