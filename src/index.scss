@@ -34,6 +34,23 @@ code {
   padding-left: 12px;
   flex: 1;
 }
+
+.chartContainer {
+  padding-left: 7%;
+  padding-right: 7%;
+  display: flex;
+  height: 100%;
+}
+.chart {
+  height: 100vh;
+  width: 100%;
+}
+// .embed {
+//   padding-left: 80vw;
+//   width: 20%;
+//   height: 100vh;
+// }
+
 @import 'node_modules/react-datepicker/src/stylesheets/datepicker.scss';
 
 .react-datepicker__input-container { 

@@ -2,6 +2,7 @@ import React from 'react';
 import {ReactTags} from 'react-tag-autocomplete'
 import DatePicker from 'react-datepicker';
 import {Line} from 'react-chartjs-2';
+import ReactPlayer from 'react-player'
 import "react-datepicker/dist/react-datepicker.css";
 import "./tags.css"
 import {
@@ -85,26 +86,33 @@ class App extends React.Component {
     this.state = {
       emotes: [],
       suggestions: [],
-      date: null,
+      date: {date: null, id: null},
       validDates: [],
+      validIDs: [],
       chart: [],
       xlabels: [],
-      liveStream: null,
+      liveStream: false,
       username: 'MOONMOON',
+      played: 0,
     };
     this.setEmotes = this.setEmotes.bind(this);
     this.setDate = this.setDate.bind(this);
     this.fetchValidDates = this.fetchValidDates.bind(this);
     this.fetchEmotes = this.fetchEmotes.bind(this);
     this.fetchTopEmotes = this.fetchTopEmotes.bind(this);
+    this.chartSeek = this.chartSeek.bind(this);
     this.reactTags = React.createRef();
+    this.playerRef = React.createRef();
     this.fetchValidDates();
+
   };
 
 
 
   fetchValidDates() {
     const validDates = [];
+    const validIds = [];
+    // fetch('http://localhost:6969/dates', 
     fetch('https://164.90.246.172:6969/dates', 
     {
       method: "POST",
@@ -118,9 +126,10 @@ class App extends React.Component {
         if (validDates.length === 0) {
           for (let i = 0; i < data.dates.length; i++) {
             validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
+            validIds.push(data.dates[i].vid_no)
           };
         };
-        this.setState({validDates: validDates, liveStream: data.live}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
+        this.setState({validDates: validDates, liveStream: data.live, validIDs: validIds}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
 
@@ -143,9 +152,10 @@ class App extends React.Component {
   }
 
   fetchEmotes(e, d) {
-    if (typeof d != Date) {
-      d = new Date(d);
+    if (typeof d.date != Date) {
+      d = new Date(d.date);
     };
+    // fetch('http://localhost:6969/fetch', 
     fetch('https://164.90.246.172:6969/fetch', 
       {
         method: "POST",
@@ -161,12 +171,15 @@ class App extends React.Component {
   };
 
   setDate(d) {
+    let vod;
     if (d) {
-      this.setState({date: d}, () => this.fetchTopEmotes(d));
+      this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
+      this.setState({date: {date: d, id: vod}}, () => this.fetchTopEmotes(d));
     }
   };
   
   fetchTopEmotes(d) {
+    // fetch('http://localhost:6969/topEmotes',
     fetch('https://164.90.246.172:6969/topEmotes',
       {
         method: "POST",
@@ -185,15 +198,25 @@ class App extends React.Component {
         this.setState({suggestions: elist}, () => this.setEmotes(elist.slice(0, 5)));
 
       })
-  }
+  };
 
+
+  ref = player => {
+    this.player = player
+  }
+  chartSeek(event) {
+    console.log(event.nativeEvent.layerX / event.target.width);
+    this.player.seekTo(parseFloat(event.nativeEvent.layerX / event.target.width), "fraction");
+    // this.setState({played: (event.x / event.chart.width)});
+  }
+  
   render = () => {
     return (
       <div>
         <div className="container">
           <div className="dpicker">
             <DatePicker
-              selected={this.state.date}
+              selected={this.state.date.date}
               onChange={d => this.setDate(d)}
               includeDates={this.state.validDates}
             />
@@ -211,11 +234,22 @@ class App extends React.Component {
             />
           </div>
         </div>
-        <div style={{ position: "relative", margin: "auto", width: "80vw" }}>
+        <div style={{ position: "relative", margin: "auto", width: "80vw"}}>
           <Line
+            onClick={(event) => this.chartSeek(event)}
             options={options}
             data={{labels:this.state.xlabels, datasets:this.state.chart}}
           />
+          <ReactPlayer 
+            ref={this.ref}
+            url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
+            controls={true}
+            width={'100%'} 
+            height={'100vh'} 
+            style={{paddingTop: '30px'}}>
+          </ReactPlayer>
+          <div>
+          </div>
         </div>
       </div>
 
