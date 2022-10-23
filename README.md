@@ -1,70 +1,25 @@
-# Getting Started with Create React App
+# MOONLIGHTS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project replaces the previous version of [MOONLIGHTS](https://github.com/jafrizzell/moonlights) which was written in python.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+MOONLIGHTS is a Twitch Chat analytics tool that tracks the usage of any emote, phrase, or sentence throughout a twitch stream.
 
-### `npm start`
+## New Features (2022-10-22)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- A real timeseries database [questdb.io](https://questdb.io)
+- Embedded Twitch.tc player
+- Improved load and response times
+- Hosted on DigitalOcean & Netlify
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Planned Features
+- UI improvements, specifically in:
+    - Datepicker dropdown
+    - Consistent colors in the chart
+    - (Potentitially) Collapsable Twitch player
+- Auto-refresh graph during livestreams
 
-### `npm test`
+## Nerd Stuff
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+ MOONLIGHTS is written with the React, using a nodejs backend to deliver content from a QuestDB database. The server and database are hosted on DigitalOcean Droplets, and the frontend is hosted on a Netlify app. You can clone both the [moonlights-js](https://github.com/jafrizzell/moonlights-js) and [moonlights-server](https://github.com/jafrizzell/moonlights-server) repos to make custom changes. Note that you will need a Twitch API Client ID, Client Secret, and Database Public IPV4 address stored in "./moonlights-server/secrets/secrets.js". You will also need to generate your own SSL key & cert if hosting on an https server.
