@@ -129,6 +129,8 @@ class App extends React.Component {
             validIds.push(data.dates[i].vid_no)
           };
         };
+        console.log(data);
+        console.log(validDates);
         this.setState({validDates: validDates, liveStream: data.live, validIDs: validIds}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
@@ -172,6 +174,7 @@ class App extends React.Component {
 
   setDate(d) {
     let vod;
+    console.log(d);
     if (d) {
       this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
       this.setState({date: {date: d, id: vod}}, () => this.fetchTopEmotes(d));
