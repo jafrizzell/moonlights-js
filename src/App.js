@@ -209,6 +209,7 @@ class App extends React.Component {
   }
   chartSeek(event) {
     console.log(event.nativeEvent.layerX / event.target.width);
+    console.log(event.nativeEvent);
     this.player.seekTo(parseFloat(event.nativeEvent.layerX / event.target.width), "fraction");
     // this.setState({played: (event.x / event.chart.width)});
   }
