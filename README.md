@@ -6,8 +6,9 @@ This project replaces the previous version of [MOONLIGHTS](https://github.com/ja
 
 MOONLIGHTS is a Twitch Chat analytics tool that tracks the usage of any emote, phrase, or sentence throughout a twitch stream.
 
-## New Features (2022-10-22)
-
+## Features (2022-12-13)
+- Datepicker dropdown
+- Embedded Twitch vod player. Click on the chart to seek the vod to that time!
 - A real timeseries database [questdb.io](https://questdb.io)
 - Embedded Twitch.tc player
 - Improved load and response times
@@ -15,9 +16,7 @@ MOONLIGHTS is a Twitch Chat analytics tool that tracks the usage of any emote, p
 
 ## Planned Features
 - UI improvements, specifically in:
-    - Datepicker dropdown
     - Consistent colors in the chart
-    - (Potentitially) Collapsable Twitch player
 - Auto-refresh graph during livestreams
 
 ## Nerd Stuff
