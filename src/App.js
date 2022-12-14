@@ -113,7 +113,7 @@ class App extends React.Component {
     const validDates = [];
     const validIds = [];
     // fetch('http://localhost:6969/dates', 
-    fetch('https://twitchlights.com:6969/dates', 
+    fetch('http://twitchlights.com:6969/dates', 
     {
       method: "POST",
       body: JSON.stringify({"username": this.state.username,}),
@@ -158,7 +158,7 @@ class App extends React.Component {
       d = new Date(d.date);
     };
     // fetch('http://localhost:6969/fetch', 
-    fetch('https://twitchlights.com:6969/fetch', 
+    fetch('http://twitchlights.com:6969/fetch', 
       {
         method: "POST",
         body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
@@ -183,7 +183,7 @@ class App extends React.Component {
   
   fetchTopEmotes(d) {
     // fetch('http://localhost:6969/topEmotes',
-    fetch('https://twitchlights.com:6969/topEmotes',
+    fetch('http://twitchlights.com:6969/topEmotes',
       {
         method: "POST",
         body: JSON.stringify({date: (d.toISOString().split('T')[0])}),
