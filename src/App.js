@@ -124,7 +124,8 @@ class App extends React.Component {
       for (let i = 0; i < data.names.length; i++) {
         nlist.push({value:i, label: data.names[i]})
       }
-      this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0]}, () => this.fetchValidDates())
+      
+      this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates())
     });
   };
 
