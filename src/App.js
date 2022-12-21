@@ -245,7 +245,7 @@ class App extends React.Component {
               options={this.state.name_suggestions}
               isClearable={false}
               isSearchable={true}
-              defaultValue={this.state.name_suggestions[0]}
+              defaultValue={this.state.username.slice(1)}
             />
           </div>
           <div className="dpicker">
