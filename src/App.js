@@ -95,7 +95,7 @@ class App extends React.Component {
       chart: [],
       xlabels: [],
       liveStream: false,
-      username: 'MOONMOON',
+      username: '',
       played: 0,
     };
     this.setEmotes = this.setEmotes.bind(this);
@@ -124,7 +124,7 @@ class App extends React.Component {
       for (let i = 0; i < data.names.length; i++) {
         nlist.push({value:i, label: data.names[i]})
       }
-      this.setState({validNames: data.names, name_suggestions: nlist}, () => this.fetchValidDates())
+      this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0]}, () => this.fetchValidDates())
     });
   };
 
