@@ -181,7 +181,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/fetch', 
       {
         method: "POST",
-        body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0], "username": '#'.concat(this.state.username)}),
+        body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0], "username": this.state.username}),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -206,7 +206,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/topEmotes',
       {
         method: "POST",
-        body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": '#'.concat(this.state.username)}),
+        body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": this.state.username}),
         headers: {
           'Content-Type': 'application/json',
         },
