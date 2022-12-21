@@ -3,6 +3,7 @@ import {ReactTags} from 'react-tag-autocomplete'
 import DatePicker from 'react-datepicker';
 import {Line} from 'react-chartjs-2';
 import ReactPlayer from 'react-player'
+import Select from 'react-select'
 import "react-datepicker/dist/react-datepicker.css";
 import "./tags.css"
 import {
@@ -86,7 +87,9 @@ class App extends React.Component {
     this.state = {
       emotes: [],
       suggestions: [],
+      name_suggestions: [],
       date: {date: null, id: null},
+      validNames: [],
       validDates: [],
       validIDs: [],
       chart: [],
@@ -103,11 +106,27 @@ class App extends React.Component {
     this.chartSeek = this.chartSeek.bind(this);
     this.reactTags = React.createRef();
     this.playerRef = React.createRef();
-    this.fetchValidDates();
+    this.fetchValidNames();
 
   };
 
-
+  fetchValidNames() {
+    fetch('https://twitchlights.com:6969/names',
+    {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      const nlist = [];
+      for (let i = 0; i < data.names.length; i++) {
+        nlist.push({value:i, label: data.names[i]})
+      }
+      this.setState({validNames: data.names, name_suggestions: nlist}, () => this.fetchValidDates())
+    });
+  };
 
   fetchValidDates() {
     const validDates = [];
@@ -116,7 +135,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/dates', 
     {
       method: "POST",
-      body: JSON.stringify({"username": this.state.username,}),
+      body: JSON.stringify({"username": this.state.username}),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -161,7 +180,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/fetch', 
       {
         method: "POST",
-        body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0]}),
+        body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0], "username": '#'.concat(this.state.username)}),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -186,7 +205,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/topEmotes',
       {
         method: "POST",
-        body: JSON.stringify({date: (d.toISOString().split('T')[0])}),
+        body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": '#'.concat(this.state.username)}),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -220,6 +239,14 @@ class App extends React.Component {
     return (
       <div>
         <div className="container">
+          <div className='dpicker'>
+            <Select
+              options={this.state.name_suggestions}
+              isClearable={false}
+              isSearchable={true}
+              defaultValue={this.state.name_suggestions[0]}
+            />
+          </div>
           <div className="dpicker">
             <DatePicker
               selected={this.state.date.date}

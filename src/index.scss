@@ -79,6 +79,17 @@ code {
   font-size: 1rem;
   font-family: 'Mulish';
 
+  .react-datepicker__week {
+    .react-datepicker__day {
+      &--disabled {
+        color: #000;
+      }
+      &--enabled {
+        color: #eaeef2;
+      }
+    }
+  }
+
   .react-datepicker__month {
     padding: 1rem 0;
     &--selected {
