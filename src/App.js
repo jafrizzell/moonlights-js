@@ -122,7 +122,7 @@ class App extends React.Component {
     .then((data) => {
       const nlist = [];
       for (let i = 0; i < data.names.length; i++) {
-        nlist.push({value:i, label: data.names[i]})
+        nlist.push({value:i, label: data.names[i].slice(1)})
       }
       
       this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates())
@@ -245,7 +245,7 @@ class App extends React.Component {
               options={this.state.name_suggestions}
               isClearable={false}
               isSearchable={true}
-              defaultValue={this.state.username.slice(1)}
+              defaultValue={this.state.name_suggestions[0]}
             />
           </div>
           <div className="dpicker">
