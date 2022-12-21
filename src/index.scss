@@ -81,11 +81,9 @@ code {
 
   .react-datepicker__week {
     .react-datepicker__day {
+      color: #eaeef2;
       &--disabled {
         color: #000;
-      }
-      &--enabled {
-        color: #eaeef2;
       }
     }
   }
