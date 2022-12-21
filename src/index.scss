@@ -121,6 +121,12 @@ code {
     border-top-left-radius: $datepicker__border-radius;
     padding: 8px 0;
     position: relative;
+    .react-datepicker__current-month {
+      color: #eaeef2;
+    }
+    .react-datepicker__day-names {
+      color: #eaeef2;
+    }
 
   }
 }
