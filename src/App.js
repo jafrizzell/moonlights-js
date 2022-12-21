@@ -122,7 +122,7 @@ class App extends React.Component {
     .then((data) => {
       const nlist = [];
       for (let i = 0; i < data.names.length; i++) {
-        nlist.push({value:i, label: data.names[i].slice(1)})
+        nlist.push({value:data.names[i], label: data.names[i].slice(1)})
       }
       
       this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates())
@@ -136,7 +136,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/dates', 
     {
       method: "POST",
-      body: JSON.stringify({"username": this.state.username}),
+      body: JSON.stringify({"username": '#'.concat(this.state.username)}),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -181,7 +181,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/fetch', 
       {
         method: "POST",
-        body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0], "username": this.state.username}),
+        body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0], "username": '#'.concat(this.state.username)}),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -206,7 +206,7 @@ class App extends React.Component {
     fetch('https://twitchlights.com:6969/topEmotes',
       {
         method: "POST",
-        body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": this.state.username}),
+        body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": '#'.concat(this.state.username)}),
         headers: {
           'Content-Type': 'application/json',
         },
