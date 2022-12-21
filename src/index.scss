@@ -125,7 +125,9 @@ code {
       color: #eaeef2;
     }
     .react-datepicker__day-names {
-      color: #eaeef2;
+      .react-datepicker__day-name {
+        color: #eaeef2;
+      }
     }
 
   }
