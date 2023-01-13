@@ -164,8 +164,12 @@ class App extends React.Component {
 
   onDelete (i) {
     const tags = this.state.emotes.slice(0)
+    const lines = this.state.chart.slice(0)
     tags.splice(i, 1)
-    this.setEmotes(tags)
+    lines.splice(i, 1)
+    if (tags.length === 0) {
+      this.setState({chart: lines}, () => this.setEmotes(tags))
+    }
   }
 
   onAddition (tag) {
