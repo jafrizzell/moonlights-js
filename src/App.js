@@ -86,7 +86,7 @@ const colorStyles = {
     ...baseStyles,
     width: 160,
     margin: 4,
-    height: 31.2,
+    height: 40.2,
     padding: 0,
     borderColor: state.isFocused ? '#54538C' : '#eaeef2',
   }),
@@ -124,8 +124,8 @@ class App extends React.Component {
   };
 
   fetchValidNames() {
-    // fetch('http://localhost:6969/names',
-    fetch('https://twitchlights.com:6969/names',
+    fetch('http://localhost:6969/names',
+    // fetch('https://twitchlights.com:6969/names',
     {
       method: "GET",
       headers: {
@@ -146,8 +146,8 @@ class App extends React.Component {
   fetchValidDates() {
     const validDates = [];
     const validIds = [];
-    // fetch('http://localhost:6969/dates', 
-    fetch('https://twitchlights.com:6969/dates', 
+    fetch('http://localhost:6969/dates', 
+    // fetch('https://twitchlights.com:6969/dates', 
     {
       method: "POST",
       body: JSON.stringify({"username": '#'.concat(this.state.username)}),
@@ -215,8 +215,8 @@ class App extends React.Component {
       d = new Date(d.date);
     };
 
-    // fetch('http://localhost:6969/fetch', 
-    fetch('https://twitchlights.com:6969/fetch', 
+    fetch('http://localhost:6969/fetch', 
+    // fetch('https://twitchlights.com:6969/fetch', 
       {
         method: "POST",
         body: JSON.stringify({
@@ -263,8 +263,8 @@ class App extends React.Component {
   };
   
   fetchTopEmotes(d) {
-    // fetch('http://localhost:6969/topEmotes',
-    fetch('https://twitchlights.com:6969/topEmotes',
+    fetch('http://localhost:6969/topEmotes',
+    // fetch('https://twitchlights.com:6969/topEmotes',
       {
         method: "POST",
         body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": '#'.concat(this.state.username)}),
