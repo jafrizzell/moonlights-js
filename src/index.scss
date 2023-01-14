@@ -18,6 +18,7 @@ code {
   padding-left: 10%;
   padding-right: 10%;
   display: flex;
+
 }
 
 .dpicker {
@@ -25,9 +26,14 @@ code {
   width: 128px;
   border: 2px solid #eaeef2;
   border-radius: 6px;
-  
-  /* height: 44px; */
-  /* padding: 0px; */
+}
+
+.npicker {
+  background-color: #121212;
+  width: 168px;
+  border: 2px solid #eaeef2;
+  border-radius: 6px;
+  margin-right: 12px;
 }
 
 .epicker {
@@ -45,11 +51,7 @@ code {
   height: 100vh;
   width: 100%;
 }
-// .embed {
-//   padding-left: 80vw;
-//   width: 20%;
-//   height: 100vh;
-// }
+
 
 @import 'node_modules/react-datepicker/src/stylesheets/datepicker.scss';
 
@@ -59,7 +61,8 @@ code {
 }
 
 .react-datepicker__input-container input {
-    height: 31.2px;
+    // height: 31.2px;
+    height: 38.2px;
     padding-top: 0px;
     padding: 0px;
     text-align: center;

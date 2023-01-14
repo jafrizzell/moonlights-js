@@ -2,10 +2,10 @@ import React from 'react';
 import {ReactTags} from 'react-tag-autocomplete'
 import DatePicker from 'react-datepicker';
 import {Line} from 'react-chartjs-2';
-import ReactPlayer from 'react-player'
-import Select from 'react-select'
+import ReactPlayer from 'react-player';
+import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
-import "./tags.css"
+import "./tags.css";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -75,10 +75,21 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Emote Usage in MOONMOON's Twitch chat",
+      text: "Emote Usage in moonmoon's Twitch chat",
       color: '#eaeef2',
     },
   },
+};
+
+const colorStyles = {
+  control: (baseStyles, state) => ({
+    ...baseStyles,
+    width: 160,
+    margin: 4,
+    height: 31.2,
+    padding: 0,
+    borderColor: state.isFocused ? '#54538C' : '#eaeef2',
+  }),
 };
 
 class App extends React.Component {
@@ -95,6 +106,8 @@ class App extends React.Component {
       chart: [],
       xlabels: [],
       liveStream: false,
+      openColors: [...Array(10).keys()],
+      usedColors: [],
       username: '',
       played: 0,
     };
@@ -111,6 +124,7 @@ class App extends React.Component {
   };
 
   fetchValidNames() {
+    // fetch('http://localhost:6969/names',
     fetch('https://twitchlights.com:6969/names',
     {
       method: "GET",
@@ -124,7 +138,7 @@ class App extends React.Component {
       for (let i = 0; i < data.names.length; i++) {
         nlist.push({value:data.names[i], label: data.names[i].slice(1)})
       }
-      
+      options.plugins.title.text = `Emote Usage in ${nlist[0].label}'s Twitch chat`;
       this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates())
     });
   };
@@ -149,8 +163,6 @@ class App extends React.Component {
             validIds.push(data.dates[i].vid_no)
           };
         };
-        // console.log(data);
-        // console.log(validDates);
         this.setState({validDates: validDates, liveStream: data.live, validIDs: validIds}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
       })
   }
@@ -159,7 +171,8 @@ class App extends React.Component {
     if (e.length === 0) {
       e = [{value: 0, label: 'All Chat Messages'}];
     }
-    this.setState({emotes: e}, () => this.fetchEmotes(this.state.emotes, this.state.date));
+
+    this.setState({emotes: [].concat(this.state.emotes, e)}, () => this.fetchEmotes(e, this.state.date));
   };
 
   onDelete (i) {
@@ -167,41 +180,85 @@ class App extends React.Component {
     const lines = this.state.chart.slice(0)
     tags.splice(i, 1)
     lines.splice(i, 1)
+    var swapColor = this.state.usedColors[i];
+    var updateColors = this.state.openColors;
+    var oldColors = this.state.usedColors;
+    updateColors.push(swapColor);
+    updateColors.sort();
+    oldColors.splice(oldColors.indexOf(swapColor), 1);
     if (tags.length === 0) {
-      this.setState({chart: lines}, () => this.setEmotes(tags))
+      this.setState({
+        chart: lines, 
+        openColors: updateColors,
+        usedColors: oldColors
+      }, () => this.setEmotes(tags))
+    }
+    else {
+      this.setState({
+        chart: lines, 
+        emotes: tags, 
+        openColors: updateColors,
+        usedColors: oldColors
+      }, () => {
+      })
     }
   }
 
   onAddition (tag) {
-    const tags = [].concat(this.state.emotes, tag)
-    this.setEmotes(tags)
+    if (this.state.emotes.length < 10) {
+      this.setEmotes([tag])
+    }
   }
 
   fetchEmotes(e, d) {
     if (typeof d.date != Date) {
       d = new Date(d.date);
     };
+
     // fetch('http://localhost:6969/fetch', 
     fetch('https://twitchlights.com:6969/fetch', 
       {
         method: "POST",
-        body: JSON.stringify({"emote": e, "date": d.toISOString().split('T')[0], "username": '#'.concat(this.state.username)}),
+        body: JSON.stringify({
+          "emote": e, 
+          "date": d.toISOString().split('T')[0], 
+          "username": '#'.concat(this.state.username),
+          "labels": this.state.xlabels,
+          "openColors": this.state.openColors,
+        }),
         headers: {
           'Content-Type': 'application/json',
         },
       }
     ).then((res) => res.json())
       .then((data) => {
-        this.setState({type: 'line', chart: data.datasets, xlabels: data.labels}, () => null);
+        var openColors = this.state.openColors;
+        var swapColor = openColors.slice(0, e.length);
+        openColors = openColors.slice(e.length);
+        var usedColors = this.state.usedColors;
+        usedColors = usedColors.concat(swapColor).sort();
+        this.setState({
+          type: 'line',
+          chart: [].concat(this.state.chart, data.datasets), 
+          xlabels: data.labels,
+          openColors: openColors,
+          usedColors: usedColors
+        }, () => null);
       });
   };
 
   setDate(d) {
     let vod;
-    // console.log(d);
     if (d) {
       this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
-      this.setState({date: {date: d, id: vod}}, () => this.fetchTopEmotes(d));
+      this.setState({
+        date: {date: d, id: vod},
+        emotes: [],
+        openColors: [...Array(10).keys()],
+        usedColors: [],
+        chart: [],
+        xlabels: []
+      }, () => this.fetchTopEmotes(d));
     }
   };
   
@@ -244,12 +301,13 @@ class App extends React.Component {
     return (
       <div>
         <div className="container">
-          <div className='dpicker'>
+          <div className='npicker'>
             <Select
+              styles={colorStyles}
               options={this.state.name_suggestions}
               isClearable={false}
               isSearchable={true}
-              defaultValue={this.state.name_suggestions[0]}
+              value={this.state.name_suggestions.slice(0, 1)}
             />
           </div>
           <div className="dpicker">
