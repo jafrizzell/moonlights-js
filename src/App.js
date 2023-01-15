@@ -15,12 +15,14 @@ import {
   Title,
   Tooltip,
   Legend,
+  LogarithmicScale,
 } from 'chart.js';
 
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  LogarithmicScale,
   PointElement,
   LineElement,
   Title,
@@ -31,6 +33,8 @@ ChartJS.register(
 export const options = {
   scales: {
     yAxes: {
+      type: 'linear',
+      min: 0,
       grid: {
         color: '#54538C',
         borderColor: '#eaeef2',
@@ -43,6 +47,7 @@ export const options = {
       }
     },
     xAxes: {
+      beginAtZero: true,
       title: {
         display: true,
         text: "Stream Timestamp",
@@ -330,12 +335,15 @@ class App extends React.Component {
             />
           </div>
         </div>
-        <div style={{ position: "relative", margin: "auto", width: "80vw"}}>
+        <div style={{ position: "relative", margin: "auto", width: "80vw", paddingBottom: '0px'}}>
           <Line
             onClick={(event) => this.chartSeek(event)}
             options={options}
             data={{labels:this.state.xlabels, datasets:this.state.chart}}
           />
+          <div>
+            <h1>hello</h1>
+          </div>
           <ReactPlayer 
             ref={this.ref}
             url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
