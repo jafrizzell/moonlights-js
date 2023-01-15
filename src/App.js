@@ -341,9 +341,6 @@ class App extends React.Component {
             options={options}
             data={{labels:this.state.xlabels, datasets:this.state.chart}}
           />
-          <div>
-            <h1>hello</h1>
-          </div>
           <ReactPlayer 
             ref={this.ref}
             url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
