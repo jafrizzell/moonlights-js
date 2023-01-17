@@ -6,6 +6,7 @@ import ReactPlayer from 'react-player';
 import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
 import "./tags.css";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,6 +30,10 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
+// const BASE_URL = 'http://localhost:6969';  // Use for local testing
+const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
+
 
 export const options = {
   scales: {
@@ -129,8 +134,8 @@ class App extends React.Component {
   };
 
   fetchValidNames() {
-    // fetch('http://localhost:6969/names',
-    fetch('https://twitchlights.com:6969/names',
+    fetch(BASE_URL+'/names',
+    // fetch('https://twitchlights.com:6969/names',
     {
       method: "GET",
       headers: {
@@ -141,7 +146,7 @@ class App extends React.Component {
     .then((data) => {
       const nlist = [];
       for (let i = 0; i < data.names.length; i++) {
-        nlist.push({value:data.names[i], label: data.names[i].slice(1)})
+        nlist.push({value:data.names[i], label: data.names[i]})
       }
       options.plugins.title.text = `Emote Usage in ${nlist[0].label}'s Twitch chat`;
       this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates())
@@ -151,8 +156,8 @@ class App extends React.Component {
   fetchValidDates() {
     const validDates = [];
     const validIds = [];
-    // fetch('http://localhost:6969/dates', 
-    fetch('https://twitchlights.com:6969/dates', 
+    console.log(this.state.username);
+    fetch(BASE_URL+'/dates', 
     {
       method: "POST",
       body: JSON.stringify({"username": '#'.concat(this.state.username)}),
@@ -220,8 +225,7 @@ class App extends React.Component {
       d = new Date(d.date);
     };
 
-    // fetch('http://localhost:6969/fetch', 
-    fetch('https://twitchlights.com:6969/fetch', 
+    fetch(BASE_URL+'/fetch', 
       {
         method: "POST",
         body: JSON.stringify({
@@ -268,8 +272,7 @@ class App extends React.Component {
   };
   
   fetchTopEmotes(d) {
-    // fetch('http://localhost:6969/topEmotes',
-    fetch('https://twitchlights.com:6969/topEmotes',
+    fetch(BASE_URL+'/topEmotes',
       {
         method: "POST",
         body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": '#'.concat(this.state.username)}),
