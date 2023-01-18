@@ -31,8 +31,8 @@ ChartJS.register(
   Legend
 );
 
-// const BASE_URL = 'http://localhost:6969';  // Use for local testing
-const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
+const BASE_URL = 'http://localhost:6969';  // Use for local testing
+// const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
 
 
 export const options = {
@@ -149,18 +149,18 @@ class App extends React.Component {
         nlist.push({value:data.names[i], label: data.names[i]})
       }
       options.plugins.title.text = `Emote Usage in ${nlist[0].label}'s Twitch chat`;
-      this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates())
+      this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates(nlist[0].label))
     });
   };
 
-  fetchValidDates() {
+  fetchValidDates(n) {
+    console.log(n);
     const validDates = [];
     const validIds = [];
-    console.log(this.state.username);
     fetch(BASE_URL+'/dates', 
     {
       method: "POST",
-      body: JSON.stringify({"username": '#'.concat(this.state.username)}),
+      body: JSON.stringify({"username": '#'.concat(n)}),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -173,8 +173,12 @@ class App extends React.Component {
             validIds.push(data.dates[i].vid_no)
           };
         };
-        this.setState({validDates: validDates, liveStream: data.live, validIDs: validIds}, () => this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00")));
-      })
+        this.setState({validDates: validDates, liveStream: data.live, validIDs: validIds}, () => 
+        { try {
+          this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00"))
+        } catch { this.setDate(new Date()) }
+      });
+    })
   }
 
   setEmotes(e) {
@@ -315,7 +319,8 @@ class App extends React.Component {
               options={this.state.name_suggestions}
               isClearable={false}
               isSearchable={true}
-              value={this.state.name_suggestions.slice(0, 1)}
+              defaultValue={{value: "moonmoon", label: "moonmoon"}}
+              onChange={n => this.fetchValidDates(n.label)}
             />
           </div>
           <div className="dpicker">
