@@ -148,12 +148,12 @@ class App extends React.Component {
       for (let i = 0; i < data.names.length; i++) {
         nlist.push({value:data.names[i], label: data.names[i]})
       }
-      options.plugins.title.text = `Emote Usage in ${nlist[0].label}'s Twitch chat`;
       this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates(nlist[0].label))
     });
   };
 
   fetchValidDates(n) {
+    options.plugins.title.text = `Emote Usage in ${n}'s Twitch chat`;
     console.log(n);
     const validDates = [];
     const validIds = [];
