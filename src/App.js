@@ -1,7 +1,7 @@
 import React from 'react';
 import {ReactTags} from 'react-tag-autocomplete'
 import DatePicker from 'react-datepicker';
-import {Line} from 'react-chartjs-2';
+import {getElementAtEvent, Line} from 'react-chartjs-2';
 import ReactPlayer from 'react-player';
 import Select from 'react-select';
 import Collapse from '@material-ui/core/Collapse';
@@ -135,6 +135,7 @@ class App extends React.Component {
     this.chartSeek = this.chartSeek.bind(this);
     this.reactTags = React.createRef();
     this.playerRef = React.createRef();
+    this.chartRef = React.createRef();
     this.fetchValidNames();
 
   };
@@ -164,6 +165,7 @@ class App extends React.Component {
   };
 
   fetchValidDates(n) {
+    window.localStorage.setItem('username', n)
     options.plugins.title.text = `Emote Usage in ${n}'s Twitch chat`;
     const validDates = [];
     const validIds = [];
@@ -177,16 +179,14 @@ class App extends React.Component {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (validDates.length === 0) {
-          for (let i = 0; i < data.dates.length; i++) {
-            validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
-            validIds.push(data.dates[i].vid_no)
-          };
+        for (let i = 0; i < data.dates.length; i++) {
+          validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
+          validIds.push(data.dates[i].vid_no)
         };
         this.setState({validDates: validDates, liveStream: data.live, validIDs: validIds}, () => 
         { try {
-          this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00"))
-        } catch { this.setDate(new Date()) }
+            this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00"))
+        } catch { this.setDate(new Date())}
       });
     })
   }
@@ -272,23 +272,22 @@ class App extends React.Component {
 
   setDate(d) {
     if (new Date() - d > this.state.vod_life * 24 * 60 * 60 * 1000) {
+      document.getElementById('vodToggle').disabled = true;
+      document.getElementById('vodToggle').innerText = 'This vod is no longer available on twitch.tv. Vods are automatically deleted after 14 days (60 days for Twitch Partners)'
+      document.getElementById('vodToggle').style.background = '#fd0029'
+      // document.getElementById('player').hidden = true;
       
-      document.getElementById('player').hidden = true;
-      const disclaimer = document.createElement('p')
-      disclaimer.setAttribute('id', 'disclaimer')
-      const disctext = document.createTextNode('This vod is no longer available on twitch.tv. Vods are automatically deleted after 14 days (60 days for Twitch Partners)')
-      disclaimer.appendChild(disctext)
-      document.getElementById('embed-player').appendChild(disclaimer)
-    } else { 
-      
-      try {
-        document.getElementById('player').hidden = false; 
-        document.getElementById('disclaimer').remove()} catch {}
+    } else {
+      document.getElementById('vodToggle').disabled = false;
+      document.getElementById('vodToggle').innerText = 'Show vod replay'
+      document.getElementById('vodToggle').style.background = '#eaeef2'
     }
     document.getElementById('graph').style.height = '80vh';
     let vod;
     if (d) {
       this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
+      window.sessionStorage.setItem('date', d);
+      window.sessionStorage.setItem('id', vod);
       this.setState({
         date: {date: d, id: vod},
         emotes: [],
@@ -327,14 +326,20 @@ class App extends React.Component {
   ref = player => {
     this.player = player
   }
+
   chartSeek(event) {
     this.setState({expanded: false, graphHeight: 30})
-    // console.log(event.nativeEvent.layerX / event.target.width);
-    // console.log(event);
-    const offsetFrac = (event.target.width - event.nativeEvent.layerX) / event.target.width;
-    const layerX_true = event.nativeEvent.layerX - event.target.width * (0.033203125 * offsetFrac);
-    this.player.seekTo(parseFloat(layerX_true / event.target.width), "fraction");
-    // this.setState({played: (event.x / event.chart.width)});
+    const idx = getElementAtEvent(this.chartRef.current, event)
+    if (idx.length > 0) {
+      const clickedTime = idx[0].element.$context.raw.x.split(':');
+      const adjTime = (+clickedTime[0]) * 60 * 60 + (+clickedTime[1]) * 60 + (+clickedTime[2])
+      this.player.seekTo(adjTime, "seconds");
+    } else {
+      const offsetFrac = (event.target.width - event.nativeEvent.layerX) / event.target.width;
+      const layerX_true = event.nativeEvent.layerX - event.target.width * (0.033203123 * offsetFrac);
+      this.player.seekTo(parseFloat(layerX_true / event.target.width), "fraction");
+
+    }
   }
   
   render = () => {
@@ -347,7 +352,7 @@ class App extends React.Component {
               options={this.state.name_suggestions}
               isClearable={false}
               isSearchable={true}
-              defaultValue={{value: "moonmoon", label: "moonmoon"}}
+              defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
               onChange={n => this.fetchValidDates(n.label)}
             />
           </div>
@@ -374,6 +379,7 @@ class App extends React.Component {
         <Collapse in={this.state.expanded} collapsedSize='30vh'>
           <div id='graph' style={{ position: "relative", margin: "auto", width: "80vw", height: `${this.state.graphHeight}vh`, paddingBottom: '0px'}}>
             <Line
+              ref={this.chartRef}
               onClick={(event) => this.chartSeek(event)}
               options={options}
               data={{labels:this.state.xlabels, datasets:this.state.chart}}
