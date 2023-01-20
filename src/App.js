@@ -279,8 +279,10 @@ class App extends React.Component {
       disclaimer.appendChild(disctext)
       document.getElementById('embed-player').appendChild(disclaimer)
     } else { 
-      document.getElementById('player').hidden = false; 
-      try {document.getElementById('disclaimer').remove()} catch {}
+      
+      try {
+        document.getElementById('player').hidden = false; 
+        document.getElementById('disclaimer').remove()} catch {}
     }
     document.getElementById('graph').style.height = '80vh';
     let vod;
