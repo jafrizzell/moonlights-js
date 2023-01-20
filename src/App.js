@@ -328,6 +328,9 @@ class App extends React.Component {
   }
 
   chartSeek(event) {
+    if (new Date() - this.state.date.date > this.state.vod_life * 24 * 60 * 60 * 1000) {
+      return;
+    }
     this.setState({expanded: false, graphHeight: 30})
     const idx = getElementAtEvent(this.chartRef.current, event)
     if (idx.length > 0) {
