@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import {Line} from 'react-chartjs-2';
 import ReactPlayer from 'react-player';
 import Select from 'react-select';
+import Collapse from '@material-ui/core/Collapse';
 import "react-datepicker/dist/react-datepicker.css";
 import "./tags.css";
 
@@ -18,6 +19,7 @@ import {
   Legend,
   LogarithmicScale,
 } from 'chart.js';
+import { Button } from '@material-ui/core';
 
 
 ChartJS.register(
@@ -75,6 +77,7 @@ export const options = {
     }
   },
   responsive: true,
+  maintainAspectRatio: false,
   stacked: true,
   plugins: {
     legend: {
@@ -120,6 +123,9 @@ class App extends React.Component {
       usedColors: [],
       username: '',
       played: 0,
+      vod_life: 0,
+      expanded: true,
+      graphHeight: 85,
     };
     this.setEmotes = this.setEmotes.bind(this);
     this.setDate = this.setDate.bind(this);
@@ -148,13 +154,17 @@ class App extends React.Component {
       for (let i = 0; i < data.names.length; i++) {
         nlist.push({value:data.names[i], label: data.names[i]})
       }
-      this.setState({validNames: data.names, name_suggestions: nlist, username: nlist[0].label}, () => this.fetchValidDates(nlist[0].label))
+      this.setState({
+        validNames: data.names, 
+        name_suggestions: nlist, 
+        username: nlist[0].label, 
+        vod_life: data.streams[0].vod_life
+      }, () => this.fetchValidDates(nlist[0].label))
     });
   };
 
   fetchValidDates(n) {
     options.plugins.title.text = `Emote Usage in ${n}'s Twitch chat`;
-    console.log(n);
     const validDates = [];
     const validIds = [];
     fetch(BASE_URL+'/dates', 
@@ -261,6 +271,18 @@ class App extends React.Component {
   };
 
   setDate(d) {
+    if (new Date() - d > this.state.vod_life * 24 * 60 * 60 * 1000) {
+      document.getElementById('player').hidden = true;
+      const disclaimer = document.createElement('p')
+      disclaimer.setAttribute('id', 'disclaimer')
+      const disctext = document.createTextNode('This vod is no longer available on twitch.tv. Vods are automatically deleted after 14 days (60 days for Twitch Partners)')
+      disclaimer.appendChild(disctext)
+      document.getElementById('embed-player').appendChild(disclaimer)
+    } else { 
+      document.getElementById('player').hidden = false; 
+      try {document.getElementById('disclaimer').remove()} catch {}
+    }
+    document.getElementById('graph').style.height = '80vh';
     let vod;
     if (d) {
       this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
@@ -270,7 +292,9 @@ class App extends React.Component {
         openColors: [...Array(10).keys()],
         usedColors: [],
         chart: [],
-        xlabels: []
+        xlabels: [],
+        expanded: true,
+        graphHeight: 85
       }, () => this.fetchTopEmotes(d));
     }
   };
@@ -301,6 +325,7 @@ class App extends React.Component {
     this.player = player
   }
   chartSeek(event) {
+    this.setState({expanded: false, graphHeight: 30})
     // console.log(event.nativeEvent.layerX / event.target.width);
     // console.log(event);
     const offsetFrac = (event.target.width - event.nativeEvent.layerX) / event.target.width;
@@ -343,23 +368,43 @@ class App extends React.Component {
             />
           </div>
         </div>
-        <div style={{ position: "relative", margin: "auto", width: "80vw", paddingBottom: '0px'}}>
-          <Line
-            onClick={(event) => this.chartSeek(event)}
-            options={options}
-            data={{labels:this.state.xlabels, datasets:this.state.chart}}
-          />
-          <ReactPlayer 
-            ref={this.ref}
-            url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
-            controls={true}
-            width={'100%'} 
-            height={'100vh'} 
-            style={{paddingTop: '30px'}}>
-          </ReactPlayer>
-          <div>
+        <Collapse in={this.state.expanded} collapsedSize='30vh'>
+          <div id='graph' style={{ position: "relative", margin: "auto", width: "80vw", height: `${this.state.graphHeight}vh`, paddingBottom: '0px'}}>
+            <Line
+              onClick={(event) => this.chartSeek(event)}
+              options={options}
+              data={{labels:this.state.xlabels, datasets:this.state.chart}}
+            />
           </div>
+        </Collapse>
+        <div className='container'>
+          <Button 
+            id='vodToggle'
+            style={{ position: "relative", margin:'auto', alignSelf:'center', width: "80vw", paddingBottom: '0px', background:'#eaeef2'}}
+            onClick={
+              () => {this.setState({expanded: !this.state.expanded, graphHeight: (+ !this.state.expanded * 55) + 30}); 
+                    if (this.state.expanded) {
+                      document.getElementById('vodToggle').innerText = 'Hide vod replay'
+                    } else {document.getElementById('vodToggle').innerText = 'Show vod replay'}
+                    }
+            }>
+            Show vod replay
+          </Button>
+
         </div>
+        <Collapse in={!this.state.expanded} unmountOnExit={true}>
+          <div id='embed-player' style={{ position: "relative", margin: "auto", width: "80vw", paddingBottom: '0px'}}>
+            <ReactPlayer
+              id={'player'}
+              ref={this.ref}
+              url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
+              controls={true}
+              width={'100%'} 
+              height={'100vh'} 
+              style={{paddingTop: '30px'}}>
+            </ReactPlayer>
+          </div>
+        </Collapse>
       </div>
 
 
