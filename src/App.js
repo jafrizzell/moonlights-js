@@ -165,6 +165,9 @@ class App extends React.Component {
   };
 
   fetchValidDates(n) {
+    if (this.state.username !== n) {
+      this.setState({username: n}, () => null)
+    }
     window.localStorage.setItem('username', n)
     options.plugins.title.text = `Emote Usage in ${n}'s Twitch chat`;
     const validDates = [];
