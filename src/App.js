@@ -272,6 +272,7 @@ class App extends React.Component {
 
   setDate(d) {
     if (new Date() - d > this.state.vod_life * 24 * 60 * 60 * 1000) {
+      
       document.getElementById('player').hidden = true;
       const disclaimer = document.createElement('p')
       disclaimer.setAttribute('id', 'disclaimer')
@@ -394,7 +395,7 @@ class App extends React.Component {
           </Button>
 
         </div>
-        <Collapse in={!this.state.expanded} unmountOnExit={true}>
+        <Collapse in={!this.state.expanded}>
           <div id='embed-player' style={{ position: "relative", margin: "auto", width: "80vw", paddingBottom: '0px'}}>
             <ReactPlayer
               id={'player'}
