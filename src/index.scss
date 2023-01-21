@@ -57,19 +57,37 @@ code {
   height: 100%;
 }
 .chart {
-  height: 100vh;
-  width: 100%;
+  // position: "relative";
+  margin: auto;
+  width: 80vw;
+  height: 80vh;
+  padding-bottom: 0px;
+  transition-duration: 500ms;
 }
+.chart-collapsed {
+  margin: auto;
+  width: 80vw;
+  height: 30vh;
+  padding-bottom: 0px;
+  transition-duration: 500ms;
+}
+
 
 .collapseButton {
   border-radius: 6px;
-  position: "relative";
-  margin: "auto";
-  width: "80vw";
-  background-color:'#eaeef2';
+  border: none;
+  position: relative;
+  margin: auto;
+  width: 80vw;
+  height: 40.2px;
+  font-size: 16px;
+  background-color:#eaeef2;
+  outline: 0 !important;
 
   &:hover {
-    background-color: #54538C;
+    background-color: #54538C !important;
+    color: #eaeef2;
+    transition: 250ms
   }
 }
 
@@ -94,7 +112,14 @@ code {
     border-color: transparent;
     background-color: #eaeef2;
     border-radius: 2px;
-  &:focus {outline:0 !important;}
+  &:focus {
+    outline:0 !important;
+  }
+  &:hover { 
+    background-color: #54538C;
+    color: #eaeef2;
+    transition: 250ms;
+  }
 }
 
 .react-datepicker__close-icon::after {

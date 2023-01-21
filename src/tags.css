@@ -62,6 +62,7 @@
   border: 0;
   border-radius: 3px;
   background: #eaeef2;
+  transition: 250ms;
 
   /* match the font styles */
   font-size: inherit;

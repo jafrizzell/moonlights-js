@@ -19,7 +19,6 @@ import {
   Legend,
   LogarithmicScale,
 } from 'chart.js';
-import { Button } from '@material-ui/core';
 
 
 ChartJS.register(
@@ -100,6 +99,13 @@ export const options = {
 };
 
 const colorStyles = {
+  placeholder: (defaultStyles, {data, isDisabled, isFocused, isSelected}) => ({
+    ...defaultStyles,
+    color: '#121212',
+    '&:hover': {
+      color: '#eaeef2'
+    }
+  }),
   control: (baseStyles, {data, isDisabled, isFocused, isSelected}) => ({
     ...baseStyles,
     width: 160,
@@ -115,11 +121,15 @@ const colorStyles = {
     '& input': {
       font: 'inherit',
     },
+    '&:hover': {
+      backgroundColor: '#54538C',
+      transition: '250ms'
+    }
   }),
   dropdownIndicator: base => ({
     ...base,
     "&:hover": {
-      color: "#54538C"
+      color: "#eaeef2"
     }
   }),
   option: (base, {data, isDisabled, isFocused, isSelected}) => ({
@@ -149,7 +159,7 @@ class App extends React.Component {
       played: 0,
       vod_life: 0,
       expanded: true,
-      graphHeight: 85,
+      // graphHeight: 85,
     };
     this.setEmotes = this.setEmotes.bind(this);
     this.setDate = this.setDate.bind(this);
@@ -220,7 +230,7 @@ class App extends React.Component {
 
   setEmotes(e) {
     if (e.length === 0) {
-      e = [{value: 0, label: 'All Chat Messages'}];
+      e = [{value: 101, label: 'All Chat Messages'}];
     }
 
     this.setState({emotes: [].concat(this.state.emotes, e)}, () => this.fetchEmotes(e, this.state.date));
@@ -240,9 +250,10 @@ class App extends React.Component {
     if (tags.length === 0) {
       this.setState({
         chart: lines, 
+        emotes: [],
         openColors: updateColors,
         usedColors: oldColors
-      }, () => this.setEmotes(tags))
+      }, () => this.setEmotes([]))
     }
     else {
       this.setState({
@@ -305,11 +316,11 @@ class App extends React.Component {
       // document.getElementById('player').hidden = true;
       
     } else {
+      document.getElementById('graph').className = 'chart';
       document.getElementById('vodToggle').disabled = false;
       document.getElementById('vodToggle').innerText = 'Show vod replay'
       document.getElementById('vodToggle').style.background = '#eaeef2'
     }
-    document.getElementById('graph').style.height = '80vh';
     let vod;
     if (d) {
       this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
@@ -323,7 +334,6 @@ class App extends React.Component {
         chart: [],
         xlabels: [],
         expanded: true,
-        graphHeight: 85
       }, () => this.fetchTopEmotes(d));
     }
   };
@@ -355,10 +365,14 @@ class App extends React.Component {
   }
 
   chartSeek(event) {
+    
     if (new Date() - this.state.date.date > this.state.vod_life * 24 * 60 * 60 * 1000) {
       return;
     }
-    this.setState({expanded: false, graphHeight: 30})
+    document.getElementById('vodToggle').innerText = 'Hide vod replay'
+    document.getElementById('graph').className = 'chart-collapsed';
+    
+    this.setState({expanded: false})
     const idx = getElementAtEvent(this.chartRef.current, event)
     if (idx.length > 0) {
       const clickedTime = idx[0].element.$context.raw.x.split(':');
@@ -382,8 +396,9 @@ class App extends React.Component {
               options={this.state.name_suggestions}
               isClearable={false}
               isSearchable={true}
-              defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
+              // defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
               onChange={n => this.fetchValidDates(n.label)}
+              placeholder={'moonmoon'}
             />
           </div>
           <div className="dpicker">
@@ -406,8 +421,18 @@ class App extends React.Component {
             />
           </div>
         </div>
-        <Collapse in={this.state.expanded} collapsedSize='30vh'>
-          <div id='graph' style={{ position: "relative", margin: "auto", width: "80vw", height: `${this.state.graphHeight}vh`, paddingBottom: '0px'}}>
+        <Collapse id='collapser' in={this.state.expanded} collapsedSize='30vh' timeout={{'enter': '500ms', 'exit': '500ms'}}>
+          <div 
+            id='graph'  
+            className='chart' 
+            // style={{height: `${this.state.graphHeight}vh`}}
+            // style={{ 
+            //   position: "relative", 
+            //   margin: "auto", 
+            //   width: "80vw", 
+            //   height: `${this.state.graphHeight}vh`, 
+            //   paddingBottom: '0px'}}
+              >
             <Line
               ref={this.chartRef}
               onClick={(event) => this.chartSeek(event)}
@@ -417,19 +442,31 @@ class App extends React.Component {
           </div>
         </Collapse>
         <div className='container'>
-          <Button 
+          <button 
             id='vodToggle'
-            // className='collapseButton'
-            style={{ position: "relative", margin:'auto', alignSelf:'center', width: "80vw", paddingBottom: '0px', background:'#eaeef2'}}
-            onClick={
-              () => {this.setState({expanded: !this.state.expanded, graphHeight: (+ !this.state.expanded * 55) + 30}); 
-                    if (this.state.expanded) {
-                      document.getElementById('vodToggle').innerText = 'Hide vod replay'
-                    } else {document.getElementById('vodToggle').innerText = 'Show vod replay'}
-                    }
-            }>
+            className='collapseButton'
+            // onClick={() => {document.getElementById('collapser').in = true}}
+            onClick={() => {
+              if (this.state.expanded) {
+                document.getElementById('graph').className = 'chart-collapsed';
+                document.getElementById('vodToggle').innerText = 'Hide vod replay';
+              } else {
+                document.getElementById('graph').className = 'chart';
+                document.getElementById('vodToggle').innerText = 'Show vod replay';
+              }
+              this.setState({expanded: !this.state.expanded})
+            }}
+            // style={{ position: "relative", margin:'auto', alignSelf:'center', width: "80vw", paddingBottom: '0px', background:'#eaeef2'}}
+            // onClick={
+            //   () => {this.setState({expanded: !this.state.expanded, graphHeight: (+ !this.state.expanded * 55) + 30}); 
+            //         if (this.state.expanded) {
+            //           document.getElementById('vodToggle').innerText = 'Hide vod replay'
+            //         } else {document.getElementById('vodToggle').innerText = 'Show vod replay'}
+            //         }
+            // }
+            >
             Show vod replay
-          </Button>
+          </button>
 
         </div>
         <Collapse in={!this.state.expanded}>
