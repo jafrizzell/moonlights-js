@@ -9,8 +9,9 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
 }
 
 .container {
@@ -28,12 +29,20 @@ code {
   border-radius: 6px;
 }
 
+.dpicker:focus-within {
+  border: 2px solid #54538C;
+}
+
 .npicker {
   background-color: #121212;
   width: 168px;
   border: 2px solid #eaeef2;
   border-radius: 6px;
   margin-right: 12px;
+}
+
+.npicker:focus-within {
+  border: 2px solid #54538C;
 }
 
 .epicker {
@@ -50,6 +59,18 @@ code {
 .chart {
   height: 100vh;
   width: 100%;
+}
+
+.collapseButton {
+  border-radius: 6px;
+  position: "relative";
+  margin: "auto";
+  width: "80vw";
+  background-color:'#eaeef2';
+
+  &:hover {
+    background-color: #54538C;
+  }
 }
 
 
@@ -70,23 +91,47 @@ code {
     line-height: 1.2;
     width: 120px;
     border-width: 0px;
-    border-color: #eaeef2;
+    border-color: transparent;
     background-color: #eaeef2;
     border-radius: 2px;
-  
+  &:focus {outline:0 !important;}
+}
+
+.react-datepicker__close-icon::after {
+  color: transparent;
+  background-color: transparent;
+  border: none;
 }
 
 .react-datepicker__month-container {
   background-color: #383838;
-  color: #3463b4;
+  border: 2px solid #eaeef2;
+  // color: #3463b4;
   font-size: 1rem;
-  font-family: 'Mulish';
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
 
   .react-datepicker__week {
     .react-datepicker__day {
       color: #eaeef2;
       &--disabled {
         color: #000;
+      }
+      &:hover{
+        background-color: #54538C;
+        border: none;
+      }
+      &--disabled:hover {
+        background-color: transparent;
+      }
+      &--selected {
+        background-color: #eaeef2;
+        color: #000;
+      }
+      &--keyboard-selected {
+        outline:0 !important;
+        background-color: #54538C;
       }
     }
   }
@@ -100,6 +145,9 @@ code {
 
   .react-datepicker__month-text {
     display: inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
     width: 5rem;
     margin: 0.5rem;
     font-size: 1rem;

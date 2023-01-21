@@ -73,6 +73,11 @@ export const options = {
         minRotation: 15,
         maxRotation: 15,
         tickLength: 10,
+        padding: 8,
+        // callback: function(val, index) {
+        //   // Hide every 2nd tick label
+        //   return index % 2 === 0 ? this.getLabelForValue(val) : '';
+        // }
       }
     }
   },
@@ -95,14 +100,33 @@ export const options = {
 };
 
 const colorStyles = {
-  control: (baseStyles, state) => ({
+  control: (baseStyles, {data, isDisabled, isFocused, isSelected}) => ({
     ...baseStyles,
     width: 160,
     margin: 4,
     height: 40.2,
     padding: 0,
-    borderColor: state.isFocused ? '#54538C' : '#eaeef2',
+    border: 0,
+    fontSize: '1rem',
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;",
+    boxShadow: 'none',
+    borderColor: '#eaeef2',
+    borderWidth: '0px',
+    '& input': {
+      font: 'inherit',
+    },
   }),
+  dropdownIndicator: base => ({
+    ...base,
+    "&:hover": {
+      color: "#54538C"
+    }
+  }),
+  option: (base, {data, isDisabled, isFocused, isSelected}) => ({
+    ...base,
+    backgroundColor: isFocused ? "#54538C" : "",
+    color: isFocused ? "#EAEEF2" : "black",
+  })
 };
 
 class App extends React.Component {
@@ -395,6 +419,7 @@ class App extends React.Component {
         <div className='container'>
           <Button 
             id='vodToggle'
+            // className='collapseButton'
             style={{ position: "relative", margin:'auto', alignSelf:'center', width: "80vw", paddingBottom: '0px', background:'#eaeef2'}}
             onClick={
               () => {this.setState({expanded: !this.state.expanded, graphHeight: (+ !this.state.expanded * 55) + 30}); 
