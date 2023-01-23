@@ -32,8 +32,8 @@ ChartJS.register(
   Legend
 );
 
-// const BASE_URL = 'http://localhost:6969';  // Use for local testing
-const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
+const BASE_URL = 'http://localhost:6969';  // Use for local testing
+// const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
 
 
 export const options = {
@@ -385,7 +385,7 @@ class App extends React.Component {
 
     }
   }
-  
+
   render = () => {
     return (
       <div>
@@ -469,12 +469,13 @@ class App extends React.Component {
           </button>
 
         </div>
-        <Collapse in={!this.state.expanded}>
+        <Collapse in={!this.state.expanded} unmountOnExit={true}>
           <div id='embed-player' style={{ position: "relative", margin: "auto", width: "80vw", paddingBottom: '0px'}}>
             <ReactPlayer
               id={'player'}
               ref={this.ref}
               url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
+              stopOnUnmount={true}
               controls={true}
               width={'100%'} 
               height={'100vh'} 

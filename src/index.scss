@@ -145,10 +145,12 @@ code {
       }
       &:hover{
         background-color: #54538C;
+        color: #eaeef2;
         border: none;
       }
       &--disabled:hover {
         background-color: transparent;
+        color: #000;
       }
       &--selected {
         background-color: #eaeef2;
