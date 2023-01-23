@@ -32,8 +32,8 @@ ChartJS.register(
   Legend
 );
 
-const BASE_URL = 'http://localhost:6969';  // Use for local testing
-// const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
+// const BASE_URL = 'http://localhost:6969';  // Use for local testing
+const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
 
 
 export const options = {
