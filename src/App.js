@@ -46,10 +46,59 @@ if (TESTING) {
 export var pageTheme = '#54538C';
 export var hoverText = '#EAEEF2';
 
+function WelcomePopup(props) {
+  return (
+    <div id='welcomePopup' className='welcomePopup'>
+      <div>
+        <h1>Welcome to Twitchlights!</h1>
+        <h2>Here are a few tips to help you get the most out of this dashboard</h2>
+        <nav>
+          <ol>
+            <li  style={{'fontWeight': 'bold'}}>Select top used emotes, or search for anything you are interested in!
+              <ul>
+                <br></br>
+                <li>Want to find when a song was played? Try searching the name of the song - it might show up on the graph!</li>
+                <br></br>
+                <li>Dev tip #1: Search for .* to see all chat messages</li>
+                <li>Dev tip #2: Use the form X|Y to search for messages with X or Y</li>
+              </ul>
+              </li>
+            <br></br>
+            <li style={{'fontWeight': 'bold'}}>Skip to the best parts of the VOD!
+              <ul>
+                <br></br>
+                <li>Click on a point on the graph to skip to that time in the VOD</li>
+                <li>Click on a "Highlight" to skip to that time in the VOD</li>
+              </ul>
+            </li>
+          </ol>
+        </nav>
+        <button 
+          onClick={() => document.getElementById('welcomePopup').remove()}>
+            Let's Go!
+          </button>
+      </div>
+    </div>
+  )  
+}
+
+function Popup(props) {
+  const isFirstVisit = props.firstVisit;
+  console.log(isFirstVisit)
+  if (isFirstVisit ==='false') {
+    return
+  }
+  if (isFirstVisit) {
+    localStorage.setItem('firstVisit', 'false')
+    return <WelcomePopup />;
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      firstVisit: localStorage.getItem('firstVisit') || true,
       emotes: [],
       suggestions: [],
       name_suggestions: [],
@@ -372,11 +421,12 @@ class App extends React.Component {
         this.killLine(c);
       }
     }
+    let yMax;
     const xLoc = loc.target.firstChild.data.split(' - ')[0];
     if (TESTING) {
-      var yMax = ChartJS.instances['1'].scales.yAxes.end;
+      yMax = ChartJS.instances['1'].scales.yAxes.end;
     } else {
-      var yMax = ChartJS.instances['0'].scales.yAxes.end;
+      yMax = ChartJS.instances['0'].scales.yAxes.end;
     }
     // const oldState = this.state.chart;
     const newLine = [{
@@ -472,6 +522,7 @@ class App extends React.Component {
   render = () => {
     return (
       <div className='page'>
+        <Popup firstVisit={this.state.firstVisit}/>
         <div style={{'min-width': '79%'}}>
           <div className="container">
             <div style={{display: 'flex', flexDirection: 'row', marginBottom: '6px', justifyContent: 'space-between'}}>
@@ -486,7 +537,7 @@ class App extends React.Component {
                   placeholder={this.state.username}
                 />
               </div>
-              <div className="dpicker">
+              <div className="dpicker" style={{'zIndex': 100}}>
                 <DatePicker
                   selected={this.state.date.date}
                   onChange={d => this.setDate(d)}
@@ -502,7 +553,7 @@ class App extends React.Component {
                 suggestions={this.state.suggestions}
                 onDelete={this.onDelete.bind(this)}
                 onAdd={this.onAddition.bind(this)}
-                newOptionText={'%value%'}
+                newOptionText={'Search for: %value%'}
                 placeholderText={'Search for anything!'}
                 delimiterKeys = {['Enter', 'Tab']}
               />
@@ -557,8 +608,10 @@ class App extends React.Component {
         </div>
         <div style={{'flex': 1}}>
           <div id='stats' className='stats-box'>
-            <header id='total-msg'>Total Chat Messages:</header>
-            <header id='unique-chatters'>Unique Chatters:</header>
+            <header className='highlights-header' style={{'text-align': 'center'}}>Stream Statistics</header>
+            <hr></hr>
+            <li id='total-msg'>Total Chat Messages:</li>
+            <li id='unique-chatters'>Unique Chatters:</li>
           </div>
           <div className='highlights' id='highlights'>
             <header className='highlights-header'>Stream Highlights</header>

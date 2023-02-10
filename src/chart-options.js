@@ -42,12 +42,12 @@ var options = {
       ticks: {
         color: '#eaeef2',
         autoSkip: true,
-        minRotation: 0,
-        maxRotation: 0,
-        min: 0,
-        max: 12,
-        stepSize: 1,
-        maxTicksLimit: 13,
+        minRotation: 15,
+        maxRotation: 15,
+        // min: 0,
+        // max: 12,
+        // stepSize: 1,
+        // maxTicksLimit: 13,
         tickLength: 10,
         padding: 8,
       }
