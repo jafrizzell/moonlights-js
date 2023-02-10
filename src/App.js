@@ -346,8 +346,8 @@ class App extends React.Component {
             li.addEventListener('mouseover', this.drawLine)
             li.className = 'highlight-item'
             li.id = `li-${k}`
-            var k_time = new Date(data.highlights[k].timestamp)
-            li.appendChild(document.createTextNode(`${new Date(k_time.setHours(k_time.getHours() - 6)).toISOString().split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`))
+            var k_time = data.highlights[k].timestamp
+            li.appendChild(document.createTextNode(`${k_time.split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`))
             ul.appendChild(li)
           }
         }
