@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-size: 1rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -7,6 +8,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #121212;
 }
+:root {
+  --accent-color: #54538C;
+  --text-color: #eaeef2;
+  --flex-direction: row;
+  --emote-buffer: 12px;
+}
+
+$accent-color: var(--accent-color);
+$text-color: var(--text-color);
+$flex-direction: var(--flex-direction);
+$emote-buffer: var(--emote-buffer);
 
 code {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,98 +26,283 @@ code {
   sans-serif;
 }
 
-.container {
-  padding: 12px;
-  padding-left: 10%;
-  padding-right: 10%;
+.page {
   display: flex;
-
+  flex-direction: $flex-direction;
+  // height: 95vh;
+  width: 100%;
 }
 
-.dpicker {
-  background-color: #121212;
-  width: 128px;
-  border: 2px solid #eaeef2;
-  border-radius: 6px;
-}
-
-.dpicker:focus-within {
-  border: 2px solid #54538C;
+.container {
+  // padding: 12px;
+  padding-top: 12px;
+  // padding-right: 12px;
+  // padding-left: 12px;
+  // padding-left: 0px;
+  width: 88%;
+  margin-left: 6%;
+  margin-right: 6%;
+  display: flex;
+  flex-direction: $flex-direction;
 }
 
 .npicker {
+  z-index: 1;
   background-color: #121212;
   width: 168px;
   border: 2px solid #eaeef2;
   border-radius: 6px;
   margin-right: 12px;
+  height: fit-content;
 }
 
 .npicker:focus-within {
-  border: 2px solid #54538C;
+  border: 2px solid $accent-color;
+}
+
+.dpicker {
+  z-index: 1;
+  background-color: #121212;
+  width: 128px;
+  border: 2px solid #eaeef2;
+  border-radius: 6px;
+  height: fit-content;
+  padding-right: 4px;
+}
+
+.dpicker:focus-within {
+  border: 2px solid $accent-color;
 }
 
 .epicker {
-  padding-left: 12px;
+  z-index: 2;
+  margin-left: $emote-buffer;
+  height: fit-content;
+  width: fit-content;
   flex: 1;
 }
 
 .chartContainer {
-  padding-left: 7%;
-  padding-right: 7%;
+  margin-left: 6%;
+  margin-right: 6%;
   display: flex;
+  flex-direction: $flex-direction;
   height: 100%;
 }
 .chart {
-  // position: "relative";
-  margin: auto;
-  width: 80vw;
+  margin-left: 6%;
+  margin-right: 6%;
+  width: 88%;
   height: 80vh;
   padding-bottom: 0px;
   transition-duration: 500ms;
 }
-.chart-collapsed {
-  margin: auto;
-  width: 80vw;
-  height: 30vh;
-  padding-bottom: 0px;
-  transition-duration: 500ms;
-}
-
 
 .collapseButton {
   border-radius: 6px;
   border: none;
-  position: relative;
-  margin: auto;
-  width: 80vw;
+  // position: relative;
+  // margin: auto;
+  padding: 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 100%;
   height: 40.2px;
   font-size: 16px;
   background-color:#eaeef2;
   outline: 0 !important;
 
-  &:hover {
-    background-color: #54538C !important;
-    color: #eaeef2;
-    transition: 250ms
+  &:enabled {
+    &:hover {
+      background-color: $accent-color !important;
+      color: $text-color;
+      transition: 250ms
+    }
+  }
+  &:disabled {
+    background-color: #fd0029 !important;
+    color: #121212;
+    &:hover {
+      animation: shake 0.55s cubic-bezier(.36,.07,.19,.97) both;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
   }
 }
+
+.react-player-container {
+  margin-left: 6%;
+  margin-right: 6%;
+  margin-top: 18px;
+  position: relative;
+  padding-top: 56.25%
+}
+.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.stats-box {
+  color: $text-color;
+  border: 0.3vh solid #eaeef2;
+  border-radius: 6px;
+  height: fit-content;
+  // width: 100%;
+  margin-top: 12px;
+  margin-right: 6%;
+  margin-left: 6%;
+  text-align: left;
+  margin-bottom: 0px;
+  padding-bottom: 0.5vh;
+}
+
+.stats-box header {
+  background-color: $accent-color;
+  color: $text-color;
+  border-radius: 3px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 0.5vh;
+  padding-left: 6px;
+  padding-bottom: 1vh;
+  padding-top: 1vh;
+  text-align: center;
+  font-size: 24px;
+  text-align: left;
+}
+
+.highlights {
+  display: flex;
+  flex-direction: column;
+  margin-right: 6%;
+  margin-left: 6%;
+  margin-top: 2vh;
+  margin-bottom: 12px;
+  padding-left: 0px;
+  // width: 100%;
+  border: 0.3vh solid #eaeef2;
+  border-radius: 6px;
+}
+
+
+#highlights nav ul { 
+  height: 68vh;
+  // margin-bottom: 12px;
+  overflow-x: hidden; 
+  overflow-y: scroll;
+  padding-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+hr {
+  color: #eaeef2;
+  margin: 0.7vh;
+  height: 0px;
+  background-color: #eaeef2;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.highlights-header {
+  background-color: $accent-color;
+  color: $text-color;
+  border-radius: 3px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 0.6vh;
+  font-size: 1.5rem;
+  text-align: center;
+  padding-left: 0px;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  margin-bottom: 0px;
+}
+
+.highlight-item {
+  background-color: $text-color;
+  font-size: inherit;
+  border-radius: 3px;
+  padding-left: 0px;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom: 0.4vh;
+  text-align: center;
+  list-style-type: none;
+  transition: 300ms;
+  &:hover {
+    background-color: $accent-color;
+    color: $text-color;
+    transition: 300ms;
+  }
+  &:target {
+    background-color: #383838;
+  }
+}
+
+.highlight-item--invalid {
+  background-color: $accent-color;
+  color: $text-color;
+  font-size: inherit;
+  border-radius: 3px;
+  padding-left: 0px;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom: 0.4vh;
+  text-align: center;
+  list-style-type: none;
+  transition: 300ms;
+  &:hover {
+    background-color: #fd0029;
+    color: #eaeef2;
+    animation: shake 0.55s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(1px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(1px, 0, 0);
+  }
+}
+
 
 
 @import 'node_modules/react-datepicker/src/stylesheets/datepicker.scss';
 
 .react-datepicker__input-container { 
-  padding-top: 4px;
-  padding-left: 4px;
+  padding: 4px;
 }
 
 .react-datepicker__input-container input {
     // height: 31.2px;
     height: 40.2px;
     padding-top: 0px;
-    padding: 0px;
+    // padding-bottom: 2px;
     text-align: center;
-    font-size: 1em;
+    font-size: inherit;
     line-height: 1.2;
     width: 120px;
     border-width: 0px;
@@ -116,8 +313,8 @@ code {
     outline:0 !important;
   }
   &:hover { 
-    background-color: #54538C;
-    color: #eaeef2;
+    background-color: $accent-color;
+    color: $text-color;
     transition: 250ms;
   }
 }
@@ -144,8 +341,8 @@ code {
         color: #000;
       }
       &:hover{
-        background-color: #54538C;
-        color: #eaeef2;
+        background-color: $accent-color;
+        color: $text-color;
         border: none;
       }
       &--disabled:hover {
@@ -158,7 +355,7 @@ code {
       }
       &--keyboard-selected {
         outline:0 !important;
-        background-color: #54538C;
+        background-color: $accent-color;
       }
     }
   }
@@ -180,7 +377,7 @@ code {
     font-size: 1rem;
     padding: 0.2rem;
     &:hover {
-      background-color: #54538C;
+      background-color: $accent-color;
     }
     &--disabled {
       cursor: default;

@@ -2,11 +2,15 @@ import React from 'react';
 import {ReactTags} from 'react-tag-autocomplete'
 import DatePicker from 'react-datepicker';
 import {getElementAtEvent, Line} from 'react-chartjs-2';
+// import { useMediaQuery } from 'react-responsive'
 import ReactPlayer from 'react-player';
 import Select from 'react-select';
 import Collapse from '@material-ui/core/Collapse';
 import "react-datepicker/dist/react-datepicker.css";
-import "./tags.css";
+import "./tags.scss";
+// import DesktopHTML from "./components/desktop.js"
+import options from "./chart-options.js"
+import colorStyles from "./react-select-styles.js"
 
 import {
   Chart as ChartJS,
@@ -18,8 +22,7 @@ import {
   Tooltip,
   Legend,
   LogarithmicScale,
-} from 'chart.js';
-
+} from 'chart.js';  
 
 ChartJS.register(
   CategoryScale,
@@ -29,115 +32,13 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 // const BASE_URL = 'http://localhost:6969';  // Use for local testing
 const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
-
-
-export const options = {
-  scales: {
-    yAxes: {
-      type: 'linear',
-      min: 0,
-      grid: {
-        color: '#54538C',
-        borderColor: '#eaeef2',
-        drawTicks: false,
-        tickColor: '#eaeef2',
-      },
-      ticks: {
-        color: '#eaeef2',
-        tickLength: 10,
-      }
-    },
-    xAxes: {
-      beginAtZero: true,
-      title: {
-        display: true,
-        text: "Stream Timestamp",
-        color: '#eaeef2',
-        padding: 8,
-      },
-      grid: {
-        color: '#54538C',
-        borderColor: '#eaeef2',
-        drawTicks: false,
-        tickColor: '#eaeef2',
-      },
-      ticks: {
-        color: '#eaeef2',
-        autoSkip: true,
-        minRotation: 15,
-        maxRotation: 15,
-        tickLength: 10,
-        padding: 8,
-        // callback: function(val, index) {
-        //   // Hide every 2nd tick label
-        //   return index % 2 === 0 ? this.getLabelForValue(val) : '';
-        // }
-      }
-    }
-  },
-  responsive: true,
-  maintainAspectRatio: false,
-  stacked: true,
-  plugins: {
-    legend: {
-      position: 'top',
-      labels: {
-        color: '#eaeef2',
-      },
-    },
-    title: {
-      display: true,
-      text: "Emote Usage in moonmoon's Twitch chat",
-      color: '#eaeef2',
-    },
-  },
-};
-
-const colorStyles = {
-  placeholder: (defaultStyles, {data, isDisabled, isFocused, isSelected}) => ({
-    ...defaultStyles,
-    color: '#121212',
-    '&:hover': {
-      color: '#eaeef2'
-    }
-  }),
-  control: (baseStyles, {data, isDisabled, isFocused, isSelected}) => ({
-    ...baseStyles,
-    width: 160,
-    margin: 4,
-    height: 40.2,
-    padding: 0,
-    border: 0,
-    fontSize: '1rem',
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;",
-    boxShadow: 'none',
-    borderColor: '#eaeef2',
-    borderWidth: '0px',
-    '& input': {
-      font: 'inherit',
-    },
-    '&:hover': {
-      backgroundColor: '#54538C',
-      transition: '250ms'
-    }
-  }),
-  dropdownIndicator: base => ({
-    ...base,
-    "&:hover": {
-      color: "#eaeef2"
-    }
-  }),
-  option: (base, {data, isDisabled, isFocused, isSelected}) => ({
-    ...base,
-    backgroundColor: isFocused ? "#54538C" : "",
-    color: isFocused ? "#EAEEF2" : "black",
-  })
-};
+export var pageTheme = '#54538C';
+export var hoverText = '#EAEEF2';
 
 class App extends React.Component {
   constructor(props) {
@@ -147,6 +48,7 @@ class App extends React.Component {
       suggestions: [],
       name_suggestions: [],
       date: {date: null, id: null},
+      // date: {date: localStorage.date, id: localStorage.id},
       validNames: [],
       validDates: [],
       validIDs: [],
@@ -155,11 +57,12 @@ class App extends React.Component {
       liveStream: false,
       openColors: [...Array(10).keys()],
       usedColors: [],
-      username: '',
+      username: localStorage.getItem('username')||'moonmoon',
       played: 0,
       vod_life: 0,
       expanded: true,
-      // graphHeight: 85,
+      collapsedSize:'30vh',
+      spacing: 0,
     };
     this.setEmotes = this.setEmotes.bind(this);
     this.setDate = this.setDate.bind(this);
@@ -167,16 +70,66 @@ class App extends React.Component {
     this.fetchEmotes = this.fetchEmotes.bind(this);
     this.fetchTopEmotes = this.fetchTopEmotes.bind(this);
     this.chartSeek = this.chartSeek.bind(this);
+    this.highlightSeek = this.highlightSeek.bind(this);
+    this.drawLine = this.drawLine.bind(this);
+    this.killLine = this.killLine.bind(this);
     this.reactTags = React.createRef();
     this.playerRef = React.createRef();
     this.chartRef = React.createRef();
-    this.fetchValidNames();
+    this.updateDimensions = this.updateDimensions.bind(this);
+    const theme = document.documentElement;
 
+    if (window.innerWidth < 992) {
+      this.state.collapsedSize = '80vh';
+      theme.style.setProperty('--flex-direction', 'column');
+      theme.style.setProperty('--emote-buffer', '0px')
+    } else { 
+      this.state.collapsedSize = '30vh';
+      theme.style.setProperty('--flex-direction', 'row'); 
+      theme.style.setProperty('--emote-buffer', '12px')
+    }
+    window.addEventListener('resize', this.updateDimensions);
+    if (window.innerWidth < 500) {
+      this.state.spacing = 40;
+    }
+    else if (window.innerWidth < 800) {
+      this.state.spacing = 120;
+    }
+    else {this.state.spacing = 240}
+    this.fetchValidNames();
+  };
+
+  // componentDidMount() {
+  //  First-time visitor popup
+  // }
+
+  updateDimensions = () => {
+    let s;
+    const theme = document.documentElement;
+    if (window.innerWidth < 500) {
+      theme.style.setProperty('--flex-direction', 'column');
+      s = 40;
+    }
+    else if (window.innerWidth < 992) {
+      theme.style.setProperty('--flex-direction', 'column');
+      s = 120;
+    }
+    else {s = 240; theme.style.setProperty('--flex-direction', 'row');}
+    const d = this.state.date
+    if (s !== this.state.spacing) {
+      this.setState({
+        spacing: s, 
+        chart: [],
+        openColors: [...Array(10).keys()],
+        usedColors: [],
+      }, () => {
+        this.fetchEmotes(this.state.emotes, d)
+      });
+    }
   };
 
   fetchValidNames() {
     fetch(BASE_URL+'/names',
-    // fetch('https://twitchlights.com:6969/names',
     {
       method: "GET",
       headers: {
@@ -185,27 +138,28 @@ class App extends React.Component {
     })
     .then((res) => res.json())
     .then((data) => {
-      const nlist = [];
-      for (let i = 0; i < data.names.length; i++) {
-        nlist.push({value:data.names[i], label: data.names[i]})
+      let nlist = [];
+      for (let n = 0; n < data.names.length; n++) {
+        nlist.push({value: data.names[n], label: data.names[n]})
+
       }
+      const savedState = data.names.indexOf(this.state.username);
+      
       this.setState({
         validNames: data.names, 
         name_suggestions: nlist, 
-        username: nlist[0].label, 
-        vod_life: data.streams[0].vod_life
-      }, () => this.fetchValidDates(nlist[0].label))
+        username: nlist[savedState].label, 
+        vod_life: data.streams[savedState].vod_life,
+      }, () => {this.fetchValidDates(this.state.username)})
     });
   };
 
   fetchValidDates(n) {
-    if (this.state.username !== n) {
-      this.setState({username: n}, () => null)
-    }
-    window.localStorage.setItem('username', n)
+    localStorage.setItem('username', n)
     options.plugins.title.text = `Emote Usage in ${n}'s Twitch chat`;
     const validDates = [];
     const validIds = [];
+
     fetch(BASE_URL+'/dates', 
     {
       method: "POST",
@@ -220,10 +174,25 @@ class App extends React.Component {
           validDates.push(new Date(data.dates[i].stream_date+"T00:00:00"));
           validIds.push(data.dates[i].vid_no)
         };
-        this.setState({validDates: validDates, liveStream: data.live, validIDs: validIds}, () => 
-        { try {
-            this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00"))
-        } catch { this.setDate(new Date())}
+        const theme = document.documentElement;
+        theme.style.setProperty('--accent-color', data.accentColor);
+        theme.style.setProperty('--text-color', data.textColor);
+        pageTheme = data.accentColor;
+        hoverText = data.textColor;
+        this.setState({
+          validDates: validDates, 
+          validIDs: validIds, 
+          username: n,
+          liveStream: data.live
+        }, () => {  
+          if (this.state.date.date !== undefined && validDates.includes(this.state.date.date)) {
+            console.log(this.state.date)
+            this.setDate(new Date(this.state.date.date))
+          } else {
+            try {
+              this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00"))
+          } catch { this.setDate(new Date())}
+          }
       });
     })
   }
@@ -239,8 +208,10 @@ class App extends React.Component {
   onDelete (i) {
     const tags = this.state.emotes.slice(0)
     const lines = this.state.chart.slice(0)
+
     tags.splice(i, 1)
     lines.splice(i, 1)
+
     var swapColor = this.state.usedColors[i];
     var updateColors = this.state.openColors;
     var oldColors = this.state.usedColors;
@@ -276,7 +247,6 @@ class App extends React.Component {
     if (typeof d.date != Date) {
       d = new Date(d.date);
     };
-
     fetch(BASE_URL+'/fetch', 
       {
         method: "POST",
@@ -286,6 +256,7 @@ class App extends React.Component {
           "username": '#'.concat(this.state.username),
           "labels": this.state.xlabels,
           "openColors": this.state.openColors,
+          "spacing": this.state.spacing
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -312,20 +283,17 @@ class App extends React.Component {
     if (new Date() - d > this.state.vod_life * 24 * 60 * 60 * 1000) {
       document.getElementById('vodToggle').disabled = true;
       document.getElementById('vodToggle').innerText = 'This vod is no longer available on twitch.tv. Vods are automatically deleted after 14 days (60 days for Twitch Partners)'
-      document.getElementById('vodToggle').style.background = '#fd0029'
-      // document.getElementById('player').hidden = true;
       
     } else {
-      document.getElementById('graph').className = 'chart';
+      document.getElementById('graph').style.height = '80vh';
       document.getElementById('vodToggle').disabled = false;
       document.getElementById('vodToggle').innerText = 'Show vod replay'
-      document.getElementById('vodToggle').style.background = '#eaeef2'
     }
     let vod;
     if (d) {
       this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
-      window.sessionStorage.setItem('date', d);
-      window.sessionStorage.setItem('id', vod);
+      // localStorage.setItem('date', d.toISOString().split('T')[0]+"T00:00:00");
+      // localStorage.setItem('id', vod);
       this.setState({
         date: {date: d, id: vod},
         emotes: [],
@@ -350,145 +318,251 @@ class App extends React.Component {
     )
       .then((res) => res.json())
       .then((data) => {
+        document.getElementById('total-msg').innerText = `Total Chat Messages: ${data.numMsg}`
+        document.getElementById('unique-chatters').innerText = `Unique Chatters: ${data.numChatters}`
+        
+        // Add calculated highlights to ul list of highlights
+        var ul = document.getElementById('highlights-section');
+        while (ul.firstChild) {
+          ul.removeChild(ul.firstChild);
+        };
+
+        let li;
+        if (data.highlights.length === 0) {
+          li = document.createElement('li');
+          li.className = 'highlight-item--invalid'
+          // li.style.disabled = true;
+          if (this.state.liveStream) {
+            li.appendChild(document.createTextNode('Highlights will be available after the stream'))
+          } else {
+            li.appendChild(document.createTextNode(`No highlights available 😞 Try again later?`))
+          }
+          ul.appendChild(li)
+        }
+        else {
+          for (let k = 0; k < data.highlights.length; k++) {
+            li = document.createElement('li');
+            li.addEventListener('click', this.highlightSeek, false)
+            li.addEventListener('mouseover', this.drawLine)
+            li.className = 'highlight-item'
+            li.id = `li-${k}`
+            var k_time = new Date(data.highlights[k].timestamp)
+            li.appendChild(document.createTextNode(`${new Date(k_time.setHours(k_time.getHours() - 6)).toISOString().split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`))
+            ul.appendChild(li)
+          }
+        }
         const elist = [];
         for (let i = 0; i < data.topEmotes.length; i++) {
           elist.push({value:i, label: data.topEmotes[i]})
         }
-        this.setState({suggestions: elist}, () => this.setEmotes(elist.slice(0, 5)));
+        this.setState({suggestions: elist, liveStream: data.live, }, () => this.setEmotes(elist.slice(0, 5)));
 
       })
   };
 
+  drawLine(loc) {
+    for (let c = 0; c < this.state.chart.length; c++) {
+      if (this.state.chart[c].label === 'Highlight') {
+        this.killLine(c);
+      }
+    }
+    const xLoc = loc.target.firstChild.data.split(' - ')[0];
+    var yMax = ChartJS.instances[1].scales.yAxes.end;
+    // const oldState = this.state.chart;
+    const newLine = [{
+      label: 'Highlight', 
+      type: 'line', 
+      backgroundColor: '#eaeef2', 
+      borderColor: '#eaeef2',
+      data: [{x: xLoc, y: '0'}, {x: xLoc, y: yMax}]
+    }];
+    // var fadeState = [].concat(this.state.chart, newLine)
+    // fadeState.slice(-1).backgroundColor = '#cccccc';
+    // fadeState.slice(-1).borderColor = '#cccccc';
+    var xlabels = this.state.xlabels;
+    if (!xlabels.includes(xLoc)) {
+      xlabels.push(xLoc);
+      for (let i = xlabels.length - 1; i > 0 && xlabels[i] < xlabels[i-1]; i--) {
+          var tmp = xlabels[i];
+          xlabels[i] = xlabels[i-1];
+          xlabels[i-1] = tmp;
+      }
+    }
+    this.setState({
+      chart: [].concat(this.state.chart, newLine),
+      xlabels: xlabels
+    }, () => { 
+    //   setTimeout(() => { 
+    //   this.setState({chart: oldState})
+    // }, 3000)
+    }
+    )
+    
+  }
+
+  killLine(loc) {
+    if (typeof loc !== 'number') {
+      loc = -1;
+    }
+    const xOut = this.state.chart.slice(loc)[0].data[0].x;
+    var afterXLabel = this.state.xlabels;
+    var afterChart = this.state.chart;
+
+    afterChart.splice(loc, 1);
+    afterXLabel.splice(afterXLabel.indexOf(xOut), 1);
+    this.setState({chart: afterChart, xlabels: afterXLabel }, () => {})
+  }
 
   ref = player => {
     this.player = player
   }
 
-  chartSeek(event) {
-    
-    if (new Date() - this.state.date.date > this.state.vod_life * 24 * 60 * 60 * 1000) {
-      return;
+  highlightSeek(event) {
+    if (this.state.expanded) {
+      this.setState({expanded: false});
     }
     document.getElementById('vodToggle').innerText = 'Hide vod replay'
-    document.getElementById('graph').className = 'chart-collapsed';
-    
-    this.setState({expanded: false})
-    const idx = getElementAtEvent(this.chartRef.current, event)
+    if (window.innerWidth > 992) {
+      document.getElementById('graph').style.height = '30vh';
+    }
+    const clickedTime = event.target.innerText.split(' ')[0].split(':');
+    const adjTime = (+clickedTime[0]) * 60 * 60 + (+clickedTime[1]) * 60 + (+clickedTime[2])
+    try {
+      this.player.onReady(() => {
+        this.player.seekTo(adjTime, "seconds");
+      })
+    } catch { this.player.seekTo(adjTime, "seconds"); }
+  }
+
+
+  chartSeek(event) {
+    const idx = getElementAtEvent(this.chartRef.current, event)    
     if (idx.length > 0) {
+      if (new Date() - this.state.date.date > this.state.vod_life * 24 * 60 * 60 * 1000) {
+        return;
+      }
+      document.getElementById('vodToggle').innerText = 'Hide vod replay'
+      if (window.innerWidth > 992) {
+        document.getElementById('graph').style.height = '30vh';
+      }
+      this.setState({expanded: false})
+      
       const clickedTime = idx[0].element.$context.raw.x.split(':');
       const adjTime = (+clickedTime[0]) * 60 * 60 + (+clickedTime[1]) * 60 + (+clickedTime[2])
-      this.player.seekTo(adjTime, "seconds");
+      try {
+        this.player.onReady(() => {
+          this.player.seekTo(adjTime, "seconds");
+        })
+      } catch { this.player.seekTo(adjTime, "seconds"); }
     } else {
-      const offsetFrac = (event.target.width - event.nativeEvent.layerX) / event.target.width;
-      const layerX_true = event.nativeEvent.layerX - event.target.width * (0.033203123 * offsetFrac);
-      this.player.seekTo(parseFloat(layerX_true / event.target.width), "fraction");
-
+      return;
     }
   }
 
   render = () => {
     return (
-      <div>
-        <div className="container">
-          <div className='npicker'>
-            <Select
-              styles={colorStyles}
-              options={this.state.name_suggestions}
-              isClearable={false}
-              isSearchable={true}
-              // defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
-              onChange={n => this.fetchValidDates(n.label)}
-              placeholder={'moonmoon'}
-            />
+      <div className='page'>
+        <div style={{'min-width': '79%'}}>
+          <div className="container">
+            <div style={{display: 'flex', flexDirection: 'row', marginBottom: '6px', justifyContent: 'space-between'}}>
+              <div className='npicker'>
+                <Select
+                  styles={colorStyles}
+                  options={this.state.name_suggestions}
+                  isClearable={false}
+                  isSearchable={true}
+                  // defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
+                  onChange={n => this.fetchValidDates(n.label)}
+                  placeholder={this.state.username}
+                />
+              </div>
+              <div className="dpicker">
+                <DatePicker
+                  selected={this.state.date.date}
+                  onChange={d => this.setDate(d)}
+                  includeDates={this.state.validDates}
+                />
+              </div>
+
+            </div>
+            <div className="epicker" id='emotePicker'>
+              <ReactTags
+                allowNew={true}
+                selected={this.state.emotes}
+                suggestions={this.state.suggestions}
+                onDelete={this.onDelete.bind(this)}
+                onAdd={this.onAddition.bind(this)}
+                newOptionText={'%value%'}
+                placeholderText={'Search for anything!'}
+                delimiterKeys = {['Enter', 'Tab']}
+              />
+            </div>
           </div>
-          <div className="dpicker">
-            <DatePicker
-              selected={this.state.date.date}
-              onChange={d => this.setDate(d)}
-              includeDates={this.state.validDates}
-            />
-          </div>
-          <div className="epicker">
-            <ReactTags
-              allowNew={true}
-              selected={this.state.emotes}
-              suggestions={this.state.suggestions}
-              onDelete={this.onDelete.bind(this)}
-              onAdd={this.onAddition.bind(this)}
-              newOptionText={'%value%'}
-              placeholderText={'Search for anything!'}
-              delimiterKeys = {['Enter', 'Tab']}
-            />
-          </div>
-        </div>
-        <Collapse id='collapser' in={this.state.expanded} collapsedSize='30vh' timeout={{'enter': '500ms', 'exit': '500ms'}}>
-          <div 
-            id='graph'  
-            className='chart' 
-            // style={{height: `${this.state.graphHeight}vh`}}
-            // style={{ 
-            //   position: "relative", 
-            //   margin: "auto", 
-            //   width: "80vw", 
-            //   height: `${this.state.graphHeight}vh`, 
-            //   paddingBottom: '0px'}}
-              >
-            <Line
-              ref={this.chartRef}
-              onClick={(event) => this.chartSeek(event)}
-              options={options}
-              data={{labels:this.state.xlabels, datasets:this.state.chart}}
-            />
-          </div>
-        </Collapse>
-        <div className='container'>
-          <button 
-            id='vodToggle'
-            className='collapseButton'
-            // onClick={() => {document.getElementById('collapser').in = true}}
-            onClick={() => {
-              if (this.state.expanded) {
-                document.getElementById('graph').className = 'chart-collapsed';
-                document.getElementById('vodToggle').innerText = 'Hide vod replay';
-              } else {
-                document.getElementById('graph').className = 'chart';
-                document.getElementById('vodToggle').innerText = 'Show vod replay';
-              }
-              this.setState({expanded: !this.state.expanded})
-            }}
-            // style={{ position: "relative", margin:'auto', alignSelf:'center', width: "80vw", paddingBottom: '0px', background:'#eaeef2'}}
-            // onClick={
-            //   () => {this.setState({expanded: !this.state.expanded, graphHeight: (+ !this.state.expanded * 55) + 30}); 
-            //         if (this.state.expanded) {
-            //           document.getElementById('vodToggle').innerText = 'Hide vod replay'
-            //         } else {document.getElementById('vodToggle').innerText = 'Show vod replay'}
-            //         }
-            // }
+          <Collapse id='collapser' in={this.state.expanded} collapsedSize={this.state.collapsedSize} timeout={{'enter': '500ms', 'exit': '500ms'}}>
+            <div id='graph' className='chart'>
+              <Line
+                ref={this.chartRef}
+                onClick={(event) => this.chartSeek(event)}
+                options={options}
+                data={{labels:this.state.xlabels, datasets:this.state.chart}}
+              />
+            </div>
+          </Collapse>
+          <div className='container'>
+            <button 
+              id='vodToggle'
+              className='collapseButton'
+              onClick={() => {
+
+                if (this.state.expanded) {
+                  if (window.innerWidth > 992) {
+                    document.getElementById('graph').style.height='30vh'
+                   } else { document.getElementById('graph').style.height='80vh'; }
+                  document.getElementById('vodToggle').innerText = 'Hide vod replay';
+                } else {
+                  document.getElementById('graph').style.height = '80vh';
+                  document.getElementById('vodToggle').innerText = 'Show vod replay';
+                }
+                this.setState({expanded: !this.state.expanded})
+              }}
             >
             Show vod replay
-          </button>
-
-        </div>
-        <Collapse in={!this.state.expanded} unmountOnExit={true}>
-          <div id='embed-player' style={{ position: "relative", margin: "auto", width: "80vw", paddingBottom: '0px'}}>
-            <ReactPlayer
-              id={'player'}
-              ref={this.ref}
-              url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
-              stopOnUnmount={true}
-              controls={true}
-              width={'100%'} 
-              height={'100vh'} 
-              style={{paddingTop: '30px'}}>
-            </ReactPlayer>
+            </button>
           </div>
-        </Collapse>
+          <Collapse in={!this.state.expanded} >
+            <div id='embed-player' className='react-player-container'>
+              <ReactPlayer
+                id={'player'}
+                ref={this.ref}
+                playing={!this.state.expanded}
+                url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
+                controls={true}
+                width={'100%'}
+                height={'100%'}
+                className={'react-player'} 
+                >
+              </ReactPlayer>
+            </div>
+          </Collapse>
+        </div>
+        <div style={{'flex': 1}}>
+          <div id='stats' className='stats-box'>
+            <header id='total-msg'>Total Chat Messages:</header>
+            <header id='unique-chatters'>Unique Chatters:</header>
+          </div>
+          <div className='highlights' id='highlights'>
+            <header className='highlights-header'>Stream Highlights</header>
+            <hr></hr>
+            <nav>
+              <ul id='highlights-section'>
+              </ul>
+            </nav>
+          </div>
+        </div>
       </div>
-
-
-    );
+    )
   };
-
+  
 };
 
 export default App;

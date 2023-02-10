@@ -1,12 +1,14 @@
+@use "index";
+
 .react-tags {
   position: relative;
   padding: 0.25rem 0 0 0.25rem;
   border: 2px solid #eaeef2;
   border-radius: 6px;
-  height: 44px;
+  height: fit-content;
 
   /* shared font styles */
-  font-size: 1em;
+  font-size: 1rem;
   line-height: 1.2;
 
   /* clicking anywhere will focus the input */
@@ -14,7 +16,7 @@
 }
 
 .react-tags.is-active {
-  border-color: #54538C;
+  border-color: index.$accent-color;
 }
 
 .react-tags.is-disabled {
@@ -71,8 +73,8 @@
 }
 
 .react-tags__tag:hover {
-  color: #eaeef2;
-  background-color: #54538C;
+  color: index.$text-color;
+  background-color: index.$accent-color;
 }
 
 .react-tags__tag::after {
@@ -146,12 +148,13 @@
 
 .react-tags__listbox-option:hover {
   cursor: pointer;
-  background: #54538C;
+  background: index.$accent-color;
+  color: index.$text-color;
+  transition: 150ms;
 }
 
 .react-tags__listbox-option:not([aria-disabled='true']).is-active {
-  background: #54538C;
-  color: #eaeef2;
+  background: index.$accent-color;
 }
 
 .react-tags__listbox-option[aria-disabled='true'] {
@@ -162,6 +165,7 @@
 
 .react-tags__listbox-option[aria-selected='true']::after {
   content: '✓';
+  color: index.$text-color;
   margin-left: 0.5rem;
 }
 
