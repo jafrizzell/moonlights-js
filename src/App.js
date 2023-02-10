@@ -34,9 +34,15 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
+const TESTING = false;
 
-// const BASE_URL = 'http://localhost:6969';  // Use for local testing
-const BASE_URL = 'https://twitchlights.com:6969';  // Use for production
+let BASE_URL;
+if (TESTING) {
+  BASE_URL = 'http://localhost:6969';  // Use for local testing
+} else {
+  BASE_URL = 'https://twitchlights.com:6969';  // Use for production
+}
+
 export var pageTheme = '#54538C';
 export var hoverText = '#EAEEF2';
 
@@ -367,8 +373,11 @@ class App extends React.Component {
       }
     }
     const xLoc = loc.target.firstChild.data.split(' - ')[0];
-    console.log(ChartJS.instances)
-    var yMax = ChartJS.instances['1'].scales.yAxes.end;
+    if (TESTING) {
+      var yMax = ChartJS.instances['1'].scales.yAxes.end;
+    } else {
+      var yMax = ChartJS.instances['0'].scales.yAxes.end;
+    }
     // const oldState = this.state.chart;
     const newLine = [{
       label: 'Highlight', 
