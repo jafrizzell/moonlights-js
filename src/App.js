@@ -367,7 +367,8 @@ class App extends React.Component {
       }
     }
     const xLoc = loc.target.firstChild.data.split(' - ')[0];
-    var yMax = ChartJS.instances[1].scales.yAxes.end;
+    console.log(ChartJS.instances)
+    var yMax = ChartJS.instances['1'].scales.yAxes.end;
     // const oldState = this.state.chart;
     const newLine = [{
       label: 'Highlight', 
