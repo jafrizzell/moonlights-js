@@ -47,11 +47,10 @@ code {
   margin-bottom: 15vh;
   border-radius: 6px;
   position: absolute;
-  padding-right: 24px;
   background-color: #eaeef2e0;
   color: #121212;
   text-align: center;
-  // border: 3px solid;
+  // border: 2px solid;
   // animation: rainbow-border 5s linear infinite;
 }
 
@@ -81,9 +80,10 @@ code {
 
 .welcomePopup nav ol {
   margin-bottom: 12px;
+  padding-right: 24px;
   height: 30vh;
   overflow-y: scroll;
-  overflow-x: hidden;
+  // overflow-x: hidden;
   text-align: left;
 }
 
@@ -126,6 +126,55 @@ code {
   margin-right: 6%;
   display: flex;
   flex-direction: $flex-direction;
+}
+
+.helpDiv {
+  z-index: 1;
+  background-color: #121212;
+  width: 44.2px;
+  border: 2px solid #eaeef2;
+  border-radius: 6px;
+  padding-right: 4px;
+  margin-right: 12px;
+  margin-bottom: 8px;
+  height: max-content;
+}
+
+.helpButton {
+    // height: 31.2px;
+    height: 40.2px;
+    width: 40.2px;
+    margin-top: 4px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    padding-top: 0px;
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    border-width: 0px;
+    border-color: transparent;
+    // background-color: #eaeef2;
+    background: url('https://em-content.zobj.net/thumbs/120/twitter/322/thinking-face_1f914.png');
+    // background: transparent;
+    background-size: 100%;
+    transition: all 250ms ease-in-out;
+    border-radius: 3px;
+    &:focus {
+      outline:0 !important;
+    }
+    &:hover { 
+    animation: rotateAnimation 1.5s linear infinite;
+    // background-image: url('https://media.tenor.com/o0KWDVtM-bAAAAAM/thinking-emoji.gif');
+    // background-color: $accent-color;
+    // color: $text-color;
+    transition: all 250ms ease-in-out;
+  }
+}
+
+@keyframes rotateAnimation {
+	from {transform: rotateY(0deg);}
+	to {transform: rotateY(360deg);}
 }
 
 .npicker {
@@ -319,6 +368,17 @@ hr {
   margin-bottom: 0px;
 }
 
+#highlights sup {
+  font-size: small;
+  white-space: pre-line;
+  color: $text-color;
+  transition: all 200ms linear;
+  &:hover {
+    color: red;
+    transition: all 200ms linear;
+  }
+}
+
 
 .highlight-item {
   background-image: linear-gradient(to right, #eaeef2, #eaeef2, $accent-color, $accent-color);
@@ -333,13 +393,14 @@ hr {
   margin-left: 3px;
   margin-right: 3px;
   margin-bottom: 0.4vh;
+  width: auto;
   text-align: center;
   list-style-type: none;
-  transition: background-position  0.3s ease-in-out, color 0.3s ease-in-out;
   &:hover {
+    background-size: 200% auto;
     background-position: right bottom;
     color: $text-color;
-    transition: background-position  0.3s ease-in-out, color 0.3s ease-in-out;
+    transition: all  0.3s ease-in-out;
   }
 }
 
@@ -447,6 +508,7 @@ hr {
         background-color: $accent-color;
         color: $text-color;
         border: none;
+        // text-shadow: none;
       }
       &--disabled:hover {
         background-color: transparent;
@@ -456,10 +518,12 @@ hr {
         background-color: #12121220;
         color: $accent-color;
         font-weight: bolder;
+        // text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
       }
       &--keyboard-selected {
         outline:0 !important;
         background-color: $accent-color;
+        color: $text-color;
       }
     }
   }

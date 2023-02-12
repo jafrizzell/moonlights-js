@@ -1,4 +1,6 @@
+import { smallScreen } from "./App";
 var pageTheme = '#EAEEF250';
+var tickSpacing = smallScreen ? 60 : 30;
 
 var options = {
   name: 'emoteGraph',
@@ -41,15 +43,23 @@ var options = {
       },
       ticks: {
         color: '#eaeef2',
-        autoSkip: true,
+        autoSkip: false,
         minRotation: 15,
         maxRotation: 15,
-        // min: 0,
-        // max: 12,
-        // stepSize: 1,
-        // maxTicksLimit: 13,
         tickLength: 10,
         padding: 8,
+        callback: function(value, index, values) {
+          var prevMin = 2
+          const min = this.getLabelForValue(value).split(':')[1];
+          try {
+            prevMin = this.getLabelForValue(value-1).split(':')[1];
+          } catch {}
+          const labelAdj = this.getLabelForValue(value).slice(0, -2)+'00';
+          if ((min % tickSpacing === 0 && prevMin % tickSpacing !== 0) || value === 0) {
+            return labelAdj;
+          }
+        } 
+
       }
     }
   },

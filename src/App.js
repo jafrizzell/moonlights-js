@@ -2,13 +2,11 @@ import React from 'react';
 import {ReactTags} from 'react-tag-autocomplete'
 import DatePicker from 'react-datepicker';
 import {getElementAtEvent, Line} from 'react-chartjs-2';
-// import { useMediaQuery } from 'react-responsive'
 import ReactPlayer from 'react-player';
 import Select from 'react-select';
 import Collapse from '@material-ui/core/Collapse';
 import "react-datepicker/dist/react-datepicker.css";
 import "./tags.scss";
-// import DesktopHTML from "./components/desktop.js"
 import options from "./chart-options.js"
 import colorStyles from "./react-select-styles.js"
 
@@ -36,19 +34,20 @@ ChartJS.register(
 );
 const TESTING = false;
 
-let BASE_URL;
-if (TESTING) {
-  BASE_URL = 'http://localhost:6969';  // Use for local testing
-} else {
-  BASE_URL = 'https://twitchlights.com:6969';  // Use for production
-}
+const BASE_URL = TESTING ? 'http://localhost:6969' : 'https://twitchlights.com:6969'
+// if (TESTING) {
+//   BASE_URL = 'http://localhost:6969';  // Use for local testing
+// } else {
+//   BASE_URL = 'https://twitchlights.com:6969';  // Use for production
+// }
 
 export var pageTheme = '#54538C';
 export var hoverText = '#EAEEF2';
+export var smallScreen = false;
 
 function WelcomePopup(props) {
   return (
-    <div id='welcomePopup' className='welcomePopup'>
+    <div id='welcomePopup' className='welcomePopup' visibility='visible'>
       <div>
         <h1>Welcome to Twitchlights!</h1>
         <h2>Here are a few tips to help you get the most out of this dashboard</h2>
@@ -60,7 +59,7 @@ function WelcomePopup(props) {
                 <li>Want to find when a song was played? Try searching the name of the song - it might show up on the graph!</li>
                 <br></br>
                 <li>Dev tip #1: Search for .* to see all chat messages</li>
-                <li>Dev tip #2: Use the form X|Y to search for messages with X or Y</li>
+                {/* <li>Dev tip #2: Use the form X|Y to search for messages with X or Y</li> */}
               </ul>
               </li>
             <br></br>
@@ -71,12 +70,29 @@ function WelcomePopup(props) {
                 <li>Click on a "Highlight" to skip to that time in the VOD</li>
               </ul>
             </li>
+            <br></br>
+            <li style={{'fontWeight': 'bold'}} href='https://www.youtube.com/channel/UCQdHh7MAW93EAqRoupxc3eg'>Check out the&nbsp;
+              <a 
+              href='https://www.youtube.com/channel/UCQdHh7MAW93EAqRoupxc3eg'
+              target="_blank" 
+              rel="noopener noreferrer"
+              >Twitchlights</a>
+              &nbsp;YouTube Channel!
+            </li>
           </ol>
         </nav>
         <button 
-          onClick={() => document.getElementById('welcomePopup').remove()}>
+          onClick={() => document.getElementById('welcomePopup').style.visibility = 'hidden'}>
             Let's Go!
-          </button>
+        </button>
+        <hr style={{'paddingRight': '2px', 'border': '1px solid #12121290', 'animation': 'rainbow-border 5s linear infinite'}}></hr>
+        <h4>
+          Made by Me actually | Discord:&nbsp;
+          <a href='https://www.discord.com/users/151913358889713667'
+            target="_blank" 
+            rel="noopener noreferrer">Me actually#8806
+          </a>
+        </h4>
       </div>
     </div>
   )  
@@ -84,7 +100,6 @@ function WelcomePopup(props) {
 
 function Popup(props) {
   const isFirstVisit = props.firstVisit;
-  console.log(isFirstVisit)
   if (isFirstVisit ==='false') {
     return
   }
@@ -145,6 +160,7 @@ class App extends React.Component {
     }
     window.addEventListener('resize', this.updateDimensions);
     if (window.innerWidth < 500) {
+      smallScreen = true;
       this.state.spacing = 40;
     }
     else if (window.innerWidth < 800) {
@@ -402,6 +418,11 @@ class App extends React.Component {
             li.className = 'highlight-item'
             li.id = `li-${k}`
             var k_time = data.highlights[k].timestamp
+            var outer_div = document.createElement('div')
+            outer_div.id = `div-${k}`
+            outer_div.className = 'highlight-item-inner'
+            // li.appendChild(outer_div.appendChild(document.createTextNode(`${k_time.split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`)))
+            // li.appendChild(outer_div)
             li.appendChild(document.createTextNode(`${k_time.split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`))
             ul.appendChild(li)
           }
@@ -440,14 +461,14 @@ class App extends React.Component {
     // fadeState.slice(-1).backgroundColor = '#cccccc';
     // fadeState.slice(-1).borderColor = '#cccccc';
     var xlabels = this.state.xlabels;
-    if (!xlabels.includes(xLoc)) {
-      xlabels.push(xLoc);
-      for (let i = xlabels.length - 1; i > 0 && xlabels[i] < xlabels[i-1]; i--) {
-          var tmp = xlabels[i];
-          xlabels[i] = xlabels[i-1];
-          xlabels[i-1] = tmp;
-      }
+    // if (!xlabels.includes(xLoc)) {
+    xlabels.push(xLoc);
+    for (let i = xlabels.length - 1; i > 0 && xlabels[i] <= xlabels[i-1]; i--) {
+        var tmp = xlabels[i];
+        xlabels[i] = xlabels[i-1];
+        xlabels[i-1] = tmp;
     }
+    // }
     this.setState({
       chart: [].concat(this.state.chart, newLine),
       xlabels: xlabels
@@ -465,12 +486,13 @@ class App extends React.Component {
       loc = -1;
     }
     const xOut = this.state.chart.slice(loc)[0].data[0].x;
+    console.log(this.state.chart)
     var afterXLabel = this.state.xlabels;
     var afterChart = this.state.chart;
-
     afterChart.splice(loc, 1);
+    console.log(afterChart)
     afterXLabel.splice(afterXLabel.indexOf(xOut), 1);
-    this.setState({chart: afterChart, xlabels: afterXLabel }, () => {})
+    this.setState({chart: afterChart, xlabels: afterXLabel.sort() }, () => {})
   }
 
   ref = player => {
@@ -522,9 +544,13 @@ class App extends React.Component {
   render = () => {
     return (
       <div className='page'>
+        {/* <Popup firstVisit={this.state.firstVisit}/> */}
         <Popup firstVisit={this.state.firstVisit}/>
         <div style={{'min-width': '79%'}}>
           <div className="container">
+              {/* <div className='helpDiv'>
+                <button className='helpButton' onClick={() => this.setState({firstVisit: true})}></button>
+              </div> */}
             <div style={{display: 'flex', flexDirection: 'row', marginBottom: '6px', justifyContent: 'space-between'}}>
               <div className='npicker'>
                 <Select
@@ -614,7 +640,12 @@ class App extends React.Component {
             <li id='unique-chatters'>Unique Chatters:</li>
           </div>
           <div className='highlights' id='highlights'>
-            <header className='highlights-header'>Stream Highlights</header>
+            <header className='highlights-header'>Stream Highlights
+              <sup 
+                aria-label='Highlights'
+                title='These highlights are automatically generated.&#13;They may take up to 24 hours to appear.'
+                > 🛈</sup>
+            </header>
             <hr></hr>
             <nav>
               <ul id='highlights-section'>
