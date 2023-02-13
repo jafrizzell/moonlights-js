@@ -453,6 +453,7 @@ class App extends React.Component {
     }
     let yMax;
     const xLoc = loc.target.firstChild.data.split(' - ')[0];
+    console.log(ChartJS.instances);
     if (TESTING) {
       yMax = ChartJS.instances['1'].scales.yAxes.end;
     } else {
