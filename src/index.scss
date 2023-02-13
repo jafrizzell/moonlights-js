@@ -9,8 +9,8 @@ body {
   background-color: #121212;
 }
 :root {
-  --accent-color: #54538C;
-  --text-color: #eaeef2;
+  --accent-color: #adace5;
+  --text-color: #121212;
   --flex-direction: row;
   --menu-margin: 12px;
   --emote-buffer: 12px;
@@ -108,15 +108,13 @@ code {
   margin-bottom: 18px;
   height: 40.2px;
   font-size: 16px;
-  background-image: linear-gradient(to right,#eaeef2, #eaeef2, red, yellow, green, blue, purple, $accent-color, $accent-color);
+  background-image: linear-gradient(to right,#eaeef2, #eaeef2, #ff0029, #377eb8, #66a61e, #984ea3, #00d2d5, $accent-color, $accent-color);
   background-size: 800% auto;
   transition: background-position 0.7s ease-in-out, color 0.7s ease-in-out;
   background-position: left bottom;
   outline: 0 !important;
   width: 75%;
   &:hover {
-    // background-image: linear-gradient(to right,#eaeef2, #eaeef2, red, yellow, green, blue, purple, $accent-color, $accent-color);
-    // background-size: 800% auto;
     background-position: right bottom;
     color: $text-color;
     transition: background-position  0.7s ease-in-out, color 0.7s ease-in-out;
@@ -142,6 +140,54 @@ code {
   margin-right: 12px;
   height: 52.2px; 
   width: 52.2px;
+  &:hover {
+    animation: hop-rotate 2s ease-in-out infinite;
+  }
+}
+
+@keyframes hop-rotate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  7% {
+    transform: translateY(0) rotate(0deg);
+  }
+  14% {
+    transform: translateY(-10px) rotate(90deg);
+  }
+  21% {
+    transform: translateY(0) rotate(90deg);
+  }
+  28% {
+    transform: translateY(0) rotate(90deg);
+  }
+  35% {
+    transform: translateY(-10px) rotate(180deg);
+  }
+  42% {
+    transform: translateY(0) rotate(180deg);
+  }
+  49% {
+    transform: translateY(0) rotate(180deg);
+  }
+  56% {
+    transform: translateY(-10px) rotate(270deg);
+  }
+  63% {
+    transform: translateY(0) rotate(270deg);
+  }
+  70% {
+    transform: translateY(0) rotate(270deg);
+  }
+  77% {
+    transform: translateY(-10px) rotate(360deg);
+  }
+  84% {
+    transform: translateY(0) rotate(360deg);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
 }
 
 .menu-bar-item-bg {
@@ -187,7 +233,7 @@ code {
   background-position: -7px -100px;
   background-repeat: no-repeat;
   border-radius: 6px;
-  transition: all 120ms linear;
+  transition: all 240ms linear;
   &:hover {
     background-image: url(../public/background_icon.png);
     background-size: 52.2px 52.2px;

@@ -30,9 +30,10 @@ var colorStyles = {
   }),
   dropdownIndicator: base => ({
     ...base,
-    "&:hover": {
-      color: hoverText
-    }
+    color: hoverText,
+    // "&:hover": {
+    //   color: '#000000',
+    // }
   }),
   option: (base, {data, isDisabled, isFocused, isSelected}) => ({
     ...base,

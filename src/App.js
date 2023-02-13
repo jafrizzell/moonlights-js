@@ -36,8 +36,9 @@ const TESTING = false;
 
 const BASE_URL = TESTING ? 'http://localhost:6969' : 'https://twitchlights.com:6969'
 
-export var pageTheme = '#54538C';
-export var hoverText = '#EAEEF2';
+// export var pageTheme = '#54538C';
+export var pageTheme = '#adace5';
+export var hoverText = '#121212';
 export var smallScreen = false;
 
 function WelcomePopup(props) {
@@ -122,7 +123,7 @@ class App extends React.Component {
       liveStream: false,
       openColors: [...Array(10).keys()],
       usedColors: [],
-      username: localStorage.getItem('username')||'moonmoon',
+      username: localStorage.getItem('username')||'MOONMOON',
       played: 0,
       vod_life: 0,
       expanded: true,
@@ -386,7 +387,10 @@ class App extends React.Component {
     fetch(BASE_URL+'/topEmotes',
       {
         method: "POST",
-        body: JSON.stringify({date: (d.toISOString().split('T')[0]), "username": '#'.concat(this.state.username)}),
+        body: JSON.stringify({
+          date: (d.toISOString().split('T')[0]), 
+          "username": '#'.concat(this.state.username)
+        }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -395,7 +399,7 @@ class App extends React.Component {
       .then((res) => res.json())
       .then((data) => {
         document.getElementById('total-msg').innerText = `Total Chat Messages: ${data.numMsg}`
-        document.getElementById('unique-chatters').innerText = `Unique Chatters: ${data.numChatters}`
+        document.getElementById('unique-chatters').innerText = `Number of Chatters: ${data.numChatters}`
         
         // Add calculated highlights to ul list of highlights
         var ul = document.getElementById('highlights-section');
@@ -454,20 +458,21 @@ class App extends React.Component {
     } else {
       yMax = ChartJS.instances['0'].scales.yAxes.end;
     }
-    // const oldState = this.state.chart;
     const newLine = [{
       label: 'Highlight', 
       type: 'line', 
       backgroundColor: '#eaeef2', 
       borderColor: '#eaeef2',
-      data: [{x: xLoc, y: '0'}, {x: xLoc, y: yMax}]
+      data: [{x: xLoc, y: 0}, {x: xLoc, y: yMax}]
     }];
-    // var fadeState = [].concat(this.state.chart, newLine)
-    // fadeState.slice(-1).backgroundColor = '#cccccc';
-    // fadeState.slice(-1).borderColor = '#cccccc';
-    var xlabels = this.state.xlabels;
-    // if (!xlabels.includes(xLoc)) {
-    xlabels.push(xLoc);
+    console.log(newLine)
+
+    const xlabels = this.state.xlabels;
+    // console.log(xlabels)
+    if (!xlabels.includes(xLoc)) {
+      xlabels.push(xLoc)
+    }
+
     for (let i = xlabels.length - 1; i > 0 && xlabels[i] <= xlabels[i-1]; i--) {
         var tmp = xlabels[i];
         xlabels[i] = xlabels[i-1];
@@ -557,8 +562,8 @@ class App extends React.Component {
                 id='menu-bar-help-1' 
                 className='menu-bar-help' 
                 alt='help button' 
-                onMouseOver={() => document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon_inv.png')}
-                onMouseLeave={() => document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon.png')}
+                onMouseOver={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon_inv.png')}, 120)}}
+                onMouseOut={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon.png')}, 95)}}
                 onClick={() => document.getElementById('welcomePopup').style.visibility = 'visible'}
               ></img>
             </div>
@@ -585,6 +590,7 @@ class App extends React.Component {
               <div id='name-date-picker' style={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between', 'marginBottom':'6px'}}>
                 <div className='npicker'>
                   <Select
+                    maxMenuHeight={250}
                     styles={colorStyles}
                     options={this.state.name_suggestions}
                     isClearable={false}
@@ -668,7 +674,7 @@ class App extends React.Component {
             <header className='highlights-header' style={{'textAlign': 'center'}}>Stream Statistics</header>
             <hr></hr>
             <li id='total-msg'>Total Chat Messages:</li>
-            <li id='unique-chatters'>Unique Chatters:</li>
+            <li id='unique-chatters'>Number of Chatters:</li>
           </div>
           <div className='highlights' id='highlights'>
             <header id='highlights-header' className='highlights-header'>Stream Highlights
