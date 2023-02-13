@@ -221,8 +221,10 @@ class App extends React.Component {
         nlist.push({value: data.names[n], label: data.names[n]})
 
       }
-      const savedState = data.names.indexOf(this.state.username);
-      
+      var savedState = data.names.indexOf(this.state.username);
+      if (savedState === -1) {
+        savedState = 0;
+      }
       this.setState({
         validNames: data.names, 
         name_suggestions: nlist, 
