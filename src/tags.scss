@@ -1,5 +1,6 @@
 @use "index";
 
+
 .react-tags {
   position: relative;
   padding: 0.25rem 0 0 0.25rem;
@@ -81,10 +82,11 @@
   content: '✕';
   margin-left: 0.5rem;
   font-size: 0.875rem;
+
 }
 
 .react-tags__tag:not(:hover)::after {
-  color: #7c7d86;
+  color: index.$text-color;
 }
 
 .react-tags__combobox {
@@ -171,6 +173,10 @@
 
 .react-tags__listbox-option[aria-selected='true']:not(.is-active)::after {
   color: #eaeef2;
+}
+
+.react-tags__listbox-option[aria-selected='true']:not(.is-active):hover::after {
+  color: index.$text-color;
 }
 
 .react-tags__suggestions li mark {

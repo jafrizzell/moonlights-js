@@ -35,11 +35,6 @@ ChartJS.register(
 const TESTING = false;
 
 const BASE_URL = TESTING ? 'http://localhost:6969' : 'https://twitchlights.com:6969'
-// if (TESTING) {
-//   BASE_URL = 'http://localhost:6969';  // Use for local testing
-// } else {
-//   BASE_URL = 'https://twitchlights.com:6969';  // Use for production
-// }
 
 export var pageTheme = '#54538C';
 export var hoverText = '#EAEEF2';
@@ -47,7 +42,7 @@ export var smallScreen = false;
 
 function WelcomePopup(props) {
   return (
-    <div id='welcomePopup' className='welcomePopup' visibility='visible'>
+    <div id='welcomePopup' className='welcomePopup' style={{'visibility': props.visibible}}>
       <div>
         <h1>Welcome to Twitchlights!</h1>
         <h2>Here are a few tips to help you get the most out of this dashboard</h2>
@@ -101,11 +96,11 @@ function WelcomePopup(props) {
 function Popup(props) {
   const isFirstVisit = props.firstVisit;
   if (isFirstVisit ==='false') {
-    return
+    return <WelcomePopup visibible={'hidden'}/>;
   }
   if (isFirstVisit) {
     localStorage.setItem('firstVisit', 'false')
-    return <WelcomePopup />;
+    return <WelcomePopup visibible={'visible'}/>;
   }
 }
 
@@ -152,10 +147,12 @@ class App extends React.Component {
     if (window.innerWidth < 992) {
       this.state.collapsedSize = '80vh';
       theme.style.setProperty('--flex-direction', 'column');
+      theme.style.setProperty('--menu-margin', '6%');
       theme.style.setProperty('--emote-buffer', '0px')
     } else { 
       this.state.collapsedSize = '30vh';
       theme.style.setProperty('--flex-direction', 'row'); 
+      theme.style.setProperty('--menu-margin', '12px'); 
       theme.style.setProperty('--emote-buffer', '12px')
     }
     window.addEventListener('resize', this.updateDimensions);
@@ -179,13 +176,22 @@ class App extends React.Component {
     const theme = document.documentElement;
     if (window.innerWidth < 500) {
       theme.style.setProperty('--flex-direction', 'column');
+      theme.style.setProperty('--menu-margin', '6%'); 
+      theme.style.setProperty('--emote-buffer', '0px')
       s = 40;
     }
     else if (window.innerWidth < 992) {
       theme.style.setProperty('--flex-direction', 'column');
+      theme.style.setProperty('--menu-margin', '6%'); 
+      theme.style.setProperty('--emote-buffer', '0px')
       s = 120;
     }
-    else {s = 240; theme.style.setProperty('--flex-direction', 'row');}
+    else {
+      s = 240; 
+      theme.style.setProperty('--flex-direction', 'row');
+      theme.style.setProperty('--menu-margin', '12px'); 
+      theme.style.setProperty('--emote-buffer', '12px')
+    }
     const d = this.state.date
     if (s !== this.state.spacing) {
       this.setState({
@@ -257,7 +263,6 @@ class App extends React.Component {
           liveStream: data.live
         }, () => {  
           if (this.state.date.date !== undefined && validDates.includes(this.state.date.date)) {
-            console.log(this.state.date)
             this.setDate(new Date(this.state.date.date))
           } else {
             try {
@@ -486,11 +491,9 @@ class App extends React.Component {
       loc = -1;
     }
     const xOut = this.state.chart.slice(loc)[0].data[0].x;
-    console.log(this.state.chart)
     var afterXLabel = this.state.xlabels;
     var afterChart = this.state.chart;
     afterChart.splice(loc, 1);
-    console.log(afterChart)
     afterXLabel.splice(afterXLabel.indexOf(xOut), 1);
     this.setState({chart: afterChart, xlabels: afterXLabel.sort() }, () => {})
   }
@@ -544,107 +547,134 @@ class App extends React.Component {
   render = () => {
     return (
       <div className='page'>
-        {/* <Popup firstVisit={this.state.firstVisit}/> */}
         <Popup firstVisit={this.state.firstVisit}/>
-        <div style={{'min-width': '79%'}}>
-          <div className="container">
-              {/* <div className='helpDiv'>
-                <button className='helpButton' onClick={() => this.setState({firstVisit: true})}></button>
-              </div> */}
-            <div style={{display: 'flex', flexDirection: 'row', marginBottom: '6px', justifyContent: 'space-between'}}>
-              <div className='npicker'>
-                <Select
-                  styles={colorStyles}
-                  options={this.state.name_suggestions}
-                  isClearable={false}
-                  isSearchable={true}
-                  // defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
-                  onChange={n => this.fetchValidDates(n.label)}
-                  placeholder={this.state.username}
-                />
-              </div>
-              <div className="dpicker" style={{'zIndex': 100}}>
-                <DatePicker
-                  selected={this.state.date.date}
-                  onChange={d => this.setDate(d)}
-                  includeDates={this.state.validDates}
-                />
-              </div>
-
+        <div id='menu-bar' className='menu-bar'>
+          <img src='icon_3color_2.png' alt='Twitchlights logo' className='menu-bar-icon'></img>
+          <div id='menu-bar-items' className='menu-bar-items'>
+            <div className='menu-bar-item-bg'>
+              <img 
+                src='help_icon.png' 
+                id='menu-bar-help-1' 
+                className='menu-bar-help' 
+                alt='help button' 
+                onMouseOver={() => document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon_inv.png')}
+                onMouseLeave={() => document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon.png')}
+                onClick={() => document.getElementById('welcomePopup').style.visibility = 'visible'}
+              ></img>
             </div>
-            <div className="epicker" id='emotePicker'>
-              <ReactTags
-                allowNew={true}
-                selected={this.state.emotes}
-                suggestions={this.state.suggestions}
-                onDelete={this.onDelete.bind(this)}
-                onAdd={this.onAddition.bind(this)}
-                newOptionText={'Search for: %value%'}
-                placeholderText={'Search for anything!'}
-                delimiterKeys = {['Enter', 'Tab']}
-              />
-            </div>
+            {/* <div className='menu-bar-item-bg'>
+              <img 
+                src='help_icon.png' 
+                id='menu-bar-help-2' 
+                className='menu-bar-help' 
+                alt='help button' 
+                onMouseOver={() => document.getElementById('menu-bar-help-2').setAttribute('src', 'help_icon_inv.png')}
+                onMouseLeave={() => document.getElementById('menu-bar-help-2').setAttribute('src', 'help_icon.png')}
+                onClick={() => document.getElementById('welcomePopup').style.visibility = 'visible'}
+              ></img>
+            </div> */}
+          
           </div>
-          <Collapse id='collapser' in={this.state.expanded} collapsedSize={this.state.collapsedSize} timeout={{'enter': '500ms', 'exit': '500ms'}}>
-            <div id='graph' className='chart'>
-              <Line
-                ref={this.chartRef}
-                onClick={(event) => this.chartSeek(event)}
-                options={options}
-                data={{labels:this.state.xlabels, datasets:this.state.chart}}
-              />
-            </div>
-          </Collapse>
-          <div className='container'>
-            <button 
-              id='vodToggle'
-              className='collapseButton'
-              onClick={() => {
-
-                if (this.state.expanded) {
-                  if (window.innerWidth > 992) {
-                    document.getElementById('graph').style.height='30vh'
-                   } else { document.getElementById('graph').style.height='80vh'; }
-                  document.getElementById('vodToggle').innerText = 'Hide vod replay';
-                } else {
-                  document.getElementById('graph').style.height = '80vh';
-                  document.getElementById('vodToggle').innerText = 'Show vod replay';
-                }
-                this.setState({expanded: !this.state.expanded})
-              }}
-            >
-            Show vod replay
-            </button>
-          </div>
-          <Collapse in={!this.state.expanded} >
-            <div id='embed-player' className='react-player-container'>
-              <ReactPlayer
-                id={'player'}
-                ref={this.ref}
-                playing={!this.state.expanded}
-                url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
-                controls={true}
-                width={'100%'}
-                height={'100%'}
-                className={'react-player'} 
-                >
-              </ReactPlayer>
-            </div>
-          </Collapse>
         </div>
-        <div style={{'flex': 1}}>
+        <div id='pickers-chart-vod' style={{'display': 'flex', 'flexDirection': 'row' , 'minWidth': '75%'}}>
+          <div style={{'width':'100%'}}>
+            <div id='input-pickers' className="container">
+                {/* <div className='helpDiv'>
+                  <button className='helpButton' onClick={() => this.setState({firstVisit: true})}></button>
+                </div> */}
+              <div id='name-date-picker' style={{'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between', 'marginBottom':'6px'}}>
+                <div className='npicker'>
+                  <Select
+                    styles={colorStyles}
+                    options={this.state.name_suggestions}
+                    isClearable={false}
+                    isSearchable={true}
+                    // defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
+                    onChange={n => this.fetchValidDates(n.label)}
+                    placeholder={this.state.username}
+                  />
+                </div>
+                <div className="dpicker" style={{'zIndex': 100}}>
+                  <DatePicker
+                    selected={this.state.date.date}
+                    onChange={d => this.setDate(d)}
+                    includeDates={this.state.validDates}
+                  />
+                </div>
+              </div>
+              <div className="epicker" id='emotePicker'>
+                <ReactTags
+                  allowNew={true}
+                  selected={this.state.emotes}
+                  suggestions={this.state.suggestions}
+                  onDelete={this.onDelete.bind(this)}
+                  onAdd={this.onAddition.bind(this)}
+                  newOptionText={'Search for: %value%'}
+                  placeholderText={'Search for anything!'}
+                  delimiterKeys = {['Enter', 'Tab']}
+                />
+              </div>
+            </div>
+            <Collapse id='collapser' in={this.state.expanded} collapsedSize={this.state.collapsedSize} timeout={{'enter': '500ms', 'exit': '500ms'}}>
+              <div id='graph' className='chart'>
+                <Line
+                  ref={this.chartRef}
+                  onClick={(event) => this.chartSeek(event)}
+                  options={options}
+                  data={{labels:this.state.xlabels, datasets:this.state.chart}}
+                />
+              </div>
+            </Collapse>
+            <div className='container'>
+              <button 
+                id='vodToggle'
+                className='collapseButton'
+                onClick={() => {
+
+                  if (this.state.expanded) {
+                    if (window.innerWidth > 992) {
+                      document.getElementById('graph').style.height='30vh'
+                    } else { document.getElementById('graph').style.height='80vh'; }
+                    document.getElementById('vodToggle').innerText = 'Hide vod replay';
+                  } else {
+                    document.getElementById('graph').style.height = '80vh';
+                    document.getElementById('vodToggle').innerText = 'Show vod replay';
+                  }
+                  this.setState({expanded: !this.state.expanded})
+                }}
+              >
+              Show vod replay
+              </button>
+            </div>
+            <Collapse in={!this.state.expanded} >
+              <div id='embed-player' className='react-player-container'>
+                <ReactPlayer
+                  id={'player'}
+                  ref={this.ref}
+                  playing={!this.state.expanded}
+                  url={`https://www.twitch.tv/videos/${this.state.date.id}`} 
+                  controls={true}
+                  width={'100%'}
+                  height={'100%'}
+                  className={'react-player'} 
+                  >
+                </ReactPlayer>
+              </div>
+            </Collapse>
+          </div>
+        </div>
+        <div style={{'flex': 2}}>
           <div id='stats' className='stats-box'>
-            <header className='highlights-header' style={{'text-align': 'center'}}>Stream Statistics</header>
+            <header className='highlights-header' style={{'textAlign': 'center'}}>Stream Statistics</header>
             <hr></hr>
             <li id='total-msg'>Total Chat Messages:</li>
             <li id='unique-chatters'>Unique Chatters:</li>
           </div>
           <div className='highlights' id='highlights'>
-            <header className='highlights-header'>Stream Highlights
-              <sup 
-                aria-label='Highlights'
-                title='These highlights are automatically generated.&#13;They may take up to 24 hours to appear.'
-                > 🛈</sup>
+            <header id='highlights-header' className='highlights-header'>Stream Highlights
+              <sup id='highlight-tooltip-icon' href='#'> 🛈</sup>
+              <span id='highlight-tooltip'>These highlights are automatically generated.
+                <br></br>It may take up to 24 hours for them to appear.</span>
             </header>
             <hr></hr>
             <nav>
