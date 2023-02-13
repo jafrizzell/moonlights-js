@@ -455,7 +455,6 @@ class App extends React.Component {
     }
     let yMax;
     const xLoc = loc.target.firstChild.data.split(' - ')[0];
-    console.log(ChartJS.instances);
     if (TESTING) {
       yMax = ChartJS.instances['1'].scales.yAxes.end;
     } else {
@@ -468,10 +467,8 @@ class App extends React.Component {
       borderColor: '#eaeef2',
       data: [{x: xLoc, y: 0}, {x: xLoc, y: yMax}]
     }];
-    console.log(newLine)
 
     const xlabels = this.state.xlabels;
-    // console.log(xlabels)
     if (!xlabels.includes(xLoc)) {
       xlabels.push(xLoc)
     }
