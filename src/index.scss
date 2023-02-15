@@ -365,12 +365,13 @@ code {
   font-size: 16px;
   background-color:#eaeef2;
   outline: 0 !important;
+  transition: all 250ms ease-in-out;
 
   &:enabled {
     &:hover {
       background-color: $accent-color !important;
       color: $text-color;
-      transition: 250ms
+      transition: all 250ms ease-in-out;
     }
   }
   &:disabled {

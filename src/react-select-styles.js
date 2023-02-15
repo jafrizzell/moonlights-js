@@ -4,6 +4,7 @@ var colorStyles = {
   placeholder: (defaultStyles, {data, isDisabled, isFocused, isSelected}) => ({
     ...defaultStyles,
     color: '#121212',
+    fontSize: '1rem',
     '&:hover': {
       color: '#eaeef2'
     }

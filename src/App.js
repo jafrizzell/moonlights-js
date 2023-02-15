@@ -454,7 +454,15 @@ class App extends React.Component {
       }
     }
     let yMax;
-    const xLoc = loc.target.firstChild.data.split(' - ')[0];
+    var xLoc = loc.target.firstChild.data.split(' - ')[0];
+    if (this.state.xlabels.includes(xLoc)) {
+      if (xLoc.split(':')[2] === '00') {
+        xLoc = xLoc.slice(0, -2).concat(parseInt(xLoc.split(':')[2])+1)
+      } else {
+        xLoc = xLoc.slice(0, -2).concat(parseInt(xLoc.split(':')[2])-1)
+
+      }
+    }
     if (TESTING) {
       yMax = ChartJS.instances['1'].scales.yAxes.end;
     } else {
