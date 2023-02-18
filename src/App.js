@@ -36,7 +36,6 @@ const TESTING = false;
 
 const BASE_URL = TESTING ? 'http://localhost:6969' : 'https://twitchlights.com:6969'
 
-// export var pageTheme = '#54538C';
 export var pageTheme = '#adace5';
 export var hoverText = '#121212';
 export var smallScreen = false;
@@ -432,8 +431,6 @@ class App extends React.Component {
             var outer_div = document.createElement('div')
             outer_div.id = `div-${k}`
             outer_div.className = 'highlight-item-inner'
-            // li.appendChild(outer_div.appendChild(document.createTextNode(`${k_time.split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`)))
-            // li.appendChild(outer_div)
             li.appendChild(document.createTextNode(`${k_time.split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`))
             ul.appendChild(li)
           }
@@ -570,23 +567,11 @@ class App extends React.Component {
                 id='menu-bar-help-1' 
                 className='menu-bar-help' 
                 alt='help button' 
-                onMouseOver={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon_inv.png')}, 120)}}
-                onMouseOut={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon.png')}, 95)}}
+                // onMouseOver={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon_inv.png')}, 120)}}
+                // onMouseOut={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon.png')}, 95)}}
                 onClick={() => document.getElementById('welcomePopup').style.visibility = 'visible'}
               ></img>
-            </div>
-            {/* <div className='menu-bar-item-bg'>
-              <img 
-                src='help_icon.png' 
-                id='menu-bar-help-2' 
-                className='menu-bar-help' 
-                alt='help button' 
-                onMouseOver={() => document.getElementById('menu-bar-help-2').setAttribute('src', 'help_icon_inv.png')}
-                onMouseLeave={() => document.getElementById('menu-bar-help-2').setAttribute('src', 'help_icon.png')}
-                onClick={() => document.getElementById('welcomePopup').style.visibility = 'visible'}
-              ></img>
-            </div> */}
-          
+            </div>          
           </div>
         </div>
         <div id='pickers-chart-vod' style={{'display': 'flex', 'flexDirection': 'row' , 'minWidth': '75%'}}>
@@ -603,7 +588,6 @@ class App extends React.Component {
                     options={this.state.name_suggestions}
                     isClearable={false}
                     isSearchable={true}
-                    // defaultValue={{value: 'moonmoon', label: 'moonmoon'}}
                     onChange={n => this.fetchValidDates(n.label)}
                     placeholder={this.state.username}
                   />
