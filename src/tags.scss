@@ -157,6 +157,7 @@
 
 .react-tags__listbox-option:not([aria-disabled='true']).is-active {
   background: index.$accent-color;
+  color: index.$text-color
 }
 
 .react-tags__listbox-option[aria-disabled='true'] {

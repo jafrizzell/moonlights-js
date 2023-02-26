@@ -5,6 +5,15 @@ import {getElementAtEvent, Line} from 'react-chartjs-2';
 import ReactPlayer from 'react-player';
 import Select from 'react-select';
 import Collapse from '@material-ui/core/Collapse';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import './react-tabs.scss';
+
+// import PropTypes from 'prop-types';
+// import Tabs from '@mui/material/Tabs';
+// import Tab from '@mui/material/Tab';
+// import Typography from '@mui/material/Typography';
+// import Box from '@mui/material/Box';
+
 import "react-datepicker/dist/react-datepicker.css";
 import "./tags.scss";
 import options from "./chart-options.js"
@@ -39,6 +48,11 @@ const BASE_URL = TESTING ? 'http://localhost:6969' : 'https://twitchlights.com:6
 export var pageTheme = '#adace5';
 export var hoverText = '#121212';
 export var smallScreen = false;
+var reloadWindow;
+
+function adjust(color, amount) {
+  return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+}
 
 function WelcomePopup(props) {
   return (
@@ -104,6 +118,7 @@ function Popup(props) {
   }
 }
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -119,9 +134,9 @@ class App extends React.Component {
       validIDs: [],
       chart: [],
       xlabels: [],
-      liveStream: false,
       openColors: [...Array(10).keys()],
       usedColors: [],
+      liveStream: false,
       username: localStorage.getItem('username')||'MOONMOON',
       played: 0,
       vod_life: 0,
@@ -138,10 +153,13 @@ class App extends React.Component {
     this.highlightSeek = this.highlightSeek.bind(this);
     this.drawLine = this.drawLine.bind(this);
     this.killLine = this.killLine.bind(this);
+    this.updateDimensions = this.updateDimensions.bind(this);
+    this.searchTranscript = this.searchTranscript.bind(this);
+    this.searchHighlight = this.searchHighlight.bind(this);
+    this.toggleSearch = this.toggleSearch.bind(this);
     this.reactTags = React.createRef();
     this.playerRef = React.createRef();
     this.chartRef = React.createRef();
-    this.updateDimensions = this.updateDimensions.bind(this);
     const theme = document.documentElement;
 
     if (window.innerWidth < 992) {
@@ -255,7 +273,9 @@ class App extends React.Component {
         };
         const theme = document.documentElement;
         theme.style.setProperty('--accent-color', data.accentColor);
+        theme.style.setProperty('--darker-accent-color', adjust(data.accentColor, -70))
         theme.style.setProperty('--text-color', data.textColor);
+
         pageTheme = data.accentColor;
         hoverText = data.textColor;
         this.setState({
@@ -263,12 +283,15 @@ class App extends React.Component {
           validIDs: validIds, 
           username: n,
           liveStream: data.live
-        }, () => {  
+        }, () => {
           if (this.state.date.date !== undefined && validDates.includes(this.state.date.date)) {
             this.setDate(new Date(this.state.date.date))
           } else {
             try {
               this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00"))
+              // if (this.state.liveStream) {
+              //   this.setDate(new Date(data.maxDate[0].stream_date+"T00:00:00"))
+              // }
           } catch { this.setDate(new Date())}
           }
       });
@@ -280,7 +303,10 @@ class App extends React.Component {
       e = [{value: 101, label: 'All Chat Messages'}];
     }
 
-    this.setState({emotes: [].concat(this.state.emotes, e)}, () => this.fetchEmotes(e, this.state.date));
+    this.setState({emotes: [].concat(this.state.emotes, e)}, () => 
+    {
+      this.fetchEmotes(e, this.state.date)
+    });
   };
 
   onDelete (i) {
@@ -368,10 +394,10 @@ class App extends React.Component {
       document.getElementById('vodToggle').innerText = 'Show vod replay'
     }
     let vod;
+    let dates_index;
+
     if (d) {
-      this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null});
-      // localStorage.setItem('date', d.toISOString().split('T')[0]+"T00:00:00");
-      // localStorage.setItem('id', vod);
+      this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]; dates_index = idx} return null});
       this.setState({
         date: {date: d, id: vod},
         emotes: [],
@@ -380,7 +406,17 @@ class App extends React.Component {
         chart: [],
         xlabels: [],
         expanded: true,
-      }, () => this.fetchTopEmotes(d));
+      }, () => {
+        this.fetchTopEmotes(d)
+        if (dates_index === 0 && this.state.liveStream) {
+          reloadWindow = setInterval(() => {
+            this.fetchTopEmotes(d)
+          }, 60000)
+        } 
+        else {
+          clearInterval(reloadWindow)
+        }
+      });
     }
   };
   
@@ -409,6 +445,8 @@ class App extends React.Component {
         };
 
         let li;
+        let t_span;
+        let m_span;
         if (data.highlights.length === 0) {
           li = document.createElement('li');
           li.className = 'highlight-item--invalid'
@@ -421,25 +459,107 @@ class App extends React.Component {
           ul.appendChild(li)
         }
         else {
+
+          var h_search = document.createElement('li');
+          h_search.id = 'highlight-search-item';
+          h_search.className = 'transcript-search-item';
+          var search_box = document.createElement('input')
+          search_box.disabled = false;
+          search_box.id = 'highlight-search';
+          search_box.style.display = 'block';
+          search_box.className = 'transcript-search';
+          search_box.placeholder = 'Search highlights';
+          search_box.addEventListener('input', this.searchHighlight);
+          var search_toggle = document.createElement('span')
+          search_toggle.appendChild(document.createTextNode('⬆️'))
+          search_toggle.addEventListener('click', this.toggleSearch)
+          search_toggle.className = 'search-toggle';
+          h_search.appendChild(search_box)
+          h_search.appendChild(search_toggle)
+          ul.appendChild(h_search) 
+
           for (let k = 0; k < data.highlights.length; k++) {
             li = document.createElement('li');
-            li.addEventListener('click', this.highlightSeek, false)
-            li.addEventListener('mouseover', this.drawLine)
-            li.className = 'highlight-item'
-            li.id = `li-${k}`
-            var k_time = data.highlights[k].timestamp
-            var outer_div = document.createElement('div')
-            outer_div.id = `div-${k}`
-            outer_div.className = 'highlight-item-inner'
-            li.appendChild(document.createTextNode(`${k_time.split('T')[1].split('.')[0]} - ${data.highlights[k].trigger}`))
-            ul.appendChild(li)
+            li.addEventListener('click', this.highlightSeek, false);
+            li.addEventListener('mouseover', this.drawLine);
+            li.className = 'highlight-item';
+            li.id = `li-${k}`;
+            var k_time = data.highlights[k].timestamp;
+            
+            t_span = document.createElement('span');
+            t_span.className = 'highlight-item-time';
+            t_span.appendChild(document.createTextNode(k_time.split('T')[1].split('.')[0]));
+            m_span = document.createElement('span');
+            m_span.className = 'highlight-item-content';
+            m_span.appendChild(document.createTextNode(data.highlights[k].trigger));
+            
+            li.appendChild(t_span);
+            li.appendChild(m_span);
+            ul.appendChild(li);
           }
         }
+
+        //  transcription 
+        
+        ul = document.getElementById('transcript-section');
+        while (ul.firstChild) {
+            ul.removeChild(ul.firstChild);
+        };
+        if (data.transcript.length === 0) {
+          li = document.createElement('li');
+          li.className = 'highlight-item--invalid'
+          li.appendChild(document.createTextNode('Transcript is not available for this stream'))
+          ul.appendChild(li)
+        }
+        else {
+
+          var t_search = document.createElement('li');
+          t_search.id = 'transcript-search-item';
+          t_search.className = 'transcript-search-item';
+          var search = document.createElement('input')
+          search.disabled = false;
+          search.id = 'transcript-search';
+          search.style.display = 'block';
+          search.className = 'transcript-search';
+          search.placeholder = 'Search transcript'
+          search.addEventListener('input', this.searchTranscript)
+          t_search.appendChild(search)
+          ul.appendChild(t_search) 
+
+          for (let k = 0; k < data.transcript.length; k++) {
+            li = document.createElement('li');
+            li.addEventListener('click', this.highlightSeek, false);
+            li.addEventListener('mouseover', this.drawLine);
+            li.className = 'highlight-item';
+            li.id = `tran-${k}`;
+            k_time = data.transcript[k].timestamp;
+            
+            t_span = document.createElement('span');
+            t_span.className = 'highlight-item-time';
+            t_span.appendChild(document.createTextNode(k_time.split('T')[1].split('.')[0]));
+            m_span = document.createElement('span');
+            m_span.className = 'highlight-item-content';
+            m_span.appendChild(document.createTextNode(data.transcript[k].transcript));
+            
+            li.appendChild(t_span);
+            li.appendChild(m_span);
+            ul.appendChild(li);
+          }
+        }
+        ul.scrollTop = ul.scrollHeight;
         const elist = [];
         for (let i = 0; i < data.topEmotes.length; i++) {
           elist.push({value:i, label: data.topEmotes[i]})
         }
-        this.setState({suggestions: elist, liveStream: data.live, }, () => this.setEmotes(elist.slice(0, 5)));
+        this.setState(
+          {
+            suggestions: elist, 
+            emotes: [], 
+            chart: [],
+            xlabels: [],
+            openColors: [...Array(10).keys()],
+            usedColors: [],
+          }, () => this.setEmotes(elist.slice(0, 5)));
 
       })
   };
@@ -451,7 +571,15 @@ class App extends React.Component {
       }
     }
     let yMax;
-    var xLoc = loc.target.firstChild.data.split(' - ')[0];
+    var xLoc = loc.target.firstChild.innerText;
+    if (xLoc === undefined) {
+      try {
+        xLoc = loc.target.previousSibling.innerText;
+      } catch {
+        xLoc = loc.target.innerText
+      }
+    }
+    
     if (this.state.xlabels.includes(xLoc)) {
       if (xLoc.split(':')[2] === '00') {
         xLoc = xLoc.slice(0, -2).concat(parseInt(xLoc.split(':')[2])+1)
@@ -487,14 +615,8 @@ class App extends React.Component {
     this.setState({
       chart: [].concat(this.state.chart, newLine),
       xlabels: xlabels
-    }, () => { 
-    //   setTimeout(() => { 
-    //   this.setState({chart: oldState})
-    // }, 3000)
-    }
-    )
-    
-  }
+    }, () => {}   
+  )}
 
   killLine(loc) {
     if (typeof loc !== 'number') {
@@ -513,6 +635,14 @@ class App extends React.Component {
   }
 
   highlightSeek(event) {
+    var xLoc = event.target.firstChild.innerText;
+    if (xLoc === undefined) {
+      try {
+        xLoc = event.target.previousSibling.innerText;
+      } catch {
+        xLoc = event.target.innerText
+      }
+    }
     if (this.state.expanded) {
       this.setState({expanded: false});
     }
@@ -520,8 +650,11 @@ class App extends React.Component {
     if (window.innerWidth > 992) {
       document.getElementById('graph').style.height = '30vh';
     }
-    const clickedTime = event.target.innerText.split(' ')[0].split(':');
-    const adjTime = (+clickedTime[0]) * 60 * 60 + (+clickedTime[1]) * 60 + (+clickedTime[2])
+    const clickedTime = xLoc.split(' ')[0].split(':');
+    var adjTime = (+clickedTime[0]) * 60 * 60 + (+clickedTime[1]) * 60 + (+clickedTime[2])
+    if (event.target.parentElement.id.includes('tran')) {
+      adjTime += 6;
+    }
     try {
       this.player.onReady(() => {
         this.player.seekTo(adjTime, "seconds");
@@ -554,6 +687,72 @@ class App extends React.Component {
     }
   }
 
+  searchTranscript(term) {
+    var search_phrase = term.target.value;
+    var ul_items = document.getElementById('transcript-section').childNodes;
+    for (let l = 1; l < ul_items.length; l++) {
+      if (!ul_items[l].innerText.includes(search_phrase)) {
+        ul_items[l].style.display = 'none';
+      } else {
+        ul_items[l].style.display = 'flex';
+      }
+    }
+  }
+
+  searchHighlight(term) {
+    var search_phrase = term.target.value;
+    var ul_items = document.getElementById('highlights-section').childNodes;
+    for (let l = 1; l < ul_items.length; l++) {
+      if (!ul_items[l].innerText.includes(search_phrase)) {
+        ul_items[l].style.display = 'none';
+      } else {
+        ul_items[l].style.display = 'flex';
+      }
+    }
+  }
+
+  toggleSearch(mode) {
+    var highlight_ul = document.getElementById('highlights-section')
+    const liArray = Array.from(highlight_ul.querySelectorAll('li'));
+
+    if (mode.target.innerText === '⬆️') {
+      mode.target.innerText = '🕘';
+      liArray.sort(function(a, b) {
+        if (a.id !== 'highlight-search-item') {
+          const aText = a.querySelector('span').innerText.split(':')
+          const bText = b.querySelector('span').innerText.split(':')
+          const aTime = 3600 * parseInt(aText[0]) + 60 * parseInt(aText[1]) + parseInt(aText[2])
+          const bTime = 3600 * parseInt(bText[0]) + 60 * parseInt(bText[1]) + parseInt(bText[2])
+          return aTime - bTime;
+        }
+        else {
+          return null
+        }
+      });
+      highlight_ul.innerHTML = '';
+      liArray.forEach(function(li) {
+        highlight_ul.appendChild(li);
+      });
+    }
+    else {
+      mode.target.innerText = '⬆️';
+      liArray.sort(function(a, b) {
+        if (a.id !== 'highlight-search-item') {
+          const aText = parseInt(a.id.slice(3));
+          const bText = parseInt(b.id.slice(3));
+          return aText - bText;
+        }
+        else {
+          return null
+        }
+      });
+      highlight_ul.innerHTML = '';
+      liArray.forEach(function(li) {
+        highlight_ul.appendChild(li);
+      });
+    }
+  }
+
   render = () => {
     return (
       <div className='page'>
@@ -571,7 +770,7 @@ class App extends React.Component {
                 // onMouseOut={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon.png')}, 95)}}
                 onClick={() => document.getElementById('welcomePopup').style.visibility = 'visible'}
               ></img>
-            </div>          
+            </div>         
           </div>
         </div>
         <div id='pickers-chart-vod' style={{'display': 'flex', 'flexDirection': 'row' , 'minWidth': '75%'}}>
@@ -661,25 +860,74 @@ class App extends React.Component {
             </Collapse>
           </div>
         </div>
-        <div style={{'flex': 2}}>
+        <div style={{'flex': 2, maxWidth: smallScreen? '100vw': '21vw'}}>
           <div id='stats' className='stats-box'>
             <header className='highlights-header' style={{'textAlign': 'center'}}>Stream Statistics</header>
             <hr></hr>
             <li id='total-msg'>Total Chat Messages:</li>
             <li id='unique-chatters'>Number of Chatters:</li>
           </div>
-          <div className='highlights' id='highlights'>
-            <header id='highlights-header' className='highlights-header'>Stream Highlights
-              <sup id='highlight-tooltip-icon' href='#'> 🛈</sup>
-              <span id='highlight-tooltip'>These highlights are automatically generated.
-                <br></br>It may take up to 24 hours for them to appear.</span>
-            </header>
-            <hr></hr>
-            <nav>
-              <ul id='highlights-section'>
-              </ul>
-            </nav>
-          </div>
+          <Tabs
+            forceRenderTabPanel 
+            className='highlights' 
+            id='highlights'>
+            <TabList style={{'border': 'none', 'margin': '0 0 0px'}}>
+              <Tab 
+                // className='highlights-header' 
+                id='highlights-header'
+                key='highlights'>
+                  Stream Highlights
+                <sup id='highlight-tooltip-icon' href='#'> 🛈</sup>
+                <span id='highlight-tooltip'>These highlights are automatically generated.
+                  <br></br>It may take up to 24 hours for them to appear.</span>
+                {/* <div className='highlights' id='highlights'>
+                  <header id='highlights-header' className='highlights-header'>Stream Highlights
+                  </header>
+                  <hr></hr>
+                  <nav>
+                    <ul id='highlights-section'>
+                    </ul>
+                  </nav>
+                </div> */}
+              </Tab>
+              <Tab 
+                // className='highlights-header' 
+                key='transcript'
+                id='transcript-header'
+                >
+                Stream Transcript
+                <sup id='transcript-tooltip-icon' href='#'> 🛈</sup>
+                <span id='transcript-tooltip'>This is an experimental feature.
+                  <br></br>Transcription will not be available for most streams.</span>
+                
+              </Tab>
+            </TabList>
+            <hr style={{marginTop: '0px', height: '2px', border: 'none', backgroundColor: pageTheme, color: pageTheme}}></hr>
+            <TabPanel>
+              <nav>
+                <ul id='highlights-section'>
+                </ul>
+              </nav>
+            </TabPanel>
+            <TabPanel>
+              <nav>
+                  <ul id='transcript-section'>
+                    <li className='transcript-search-item' id='transcript-search-item'>
+                      <input 
+                        disabled={false} 
+                        id='transcript-search' 
+                        placeholder='Search transcript' 
+                        className='transcript-search'>  
+                      </input>
+                    </li>
+                    <li className='highlight-item'>
+                      <span className='highlight-item-time'>00:00:00</span>
+                      <span className='highlight-item-content'>So anyways chat I was talking with my wife yesterday and she said "Why are you talking to yourself? I'm a figment of your imagination." Which I though was pretty funny, because she is definitely real.</span>
+                    </li>
+                  </ul>
+                </nav>
+            </TabPanel>
+          </Tabs>
         </div>
       </div>
     )

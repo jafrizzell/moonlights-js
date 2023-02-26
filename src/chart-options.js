@@ -49,13 +49,13 @@ var options = {
         tickLength: 10,
         padding: 8,
         callback: function(value, index, values) {
-          var prevMin = 2
-          const min = this.getLabelForValue(value).split(':')[1];
+          var prevMinute = 2
+          const minute = this.getLabelForValue(value).split(':')[1];
           try {
-            prevMin = this.getLabelForValue(value-1).split(':')[1];
+            prevMinute = this.getLabelForValue(value-1).split(':')[1];
           } catch {}
           const labelAdj = this.getLabelForValue(value).slice(0, -2)+'00';
-          if ((min % tickSpacing === 0 && prevMin % tickSpacing !== 0) || value === 0) {
+          if ((minute % tickSpacing === 0 && prevMinute % tickSpacing !== 0) || value === 0) {
             return labelAdj;
           }
         } 

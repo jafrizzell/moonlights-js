@@ -11,12 +11,13 @@ body {
 :root {
   --accent-color: #adace5;
   --text-color: #121212;
+  --darker-accent-color: #7d7db3;
   --flex-direction: row;
   --menu-margin: 12px;
   --emote-buffer: 12px;
 }
 
-$breakpoint: 1200px;
+$breakpoint: 992px;
 
 
 $accent-color: var(--accent-color);
@@ -24,6 +25,7 @@ $menu-margin: var(--menu-margin);
 $text-color: var(--text-color);
 $flex-direction: var(--flex-direction);
 $emote-buffer: var(--emote-buffer);
+$darker-accent-color: var(--darker-accent-color);
 
 
 
@@ -460,7 +462,7 @@ code {
 
 
 #highlights nav ul { 
-  height: 60vh;
+  height: 57vh;
   overflow-x: hidden; 
   overflow-y: scroll;
   padding-left: 0px;
@@ -490,33 +492,45 @@ hr {
   padding-top: 2vh;
   padding-bottom: 2vh;
   margin-bottom: 0px;
+  // width: min-content;
+  &:focus {
+    outline:0 !important;
+  }
 }
 
-#highlight-tooltip-icon {
+#highlight-tooltip-icon, #transcript-tooltip-icon {
   font-size: small;
   white-space: pre-line;
   color: $text-color;
-  transition: all 200ms linear;
+  transition: all 400ms linear;
   &:hover {
     color: red;
-    transition: all 200ms linear;
+    transition: all 400ms linear;
   }
 }
 
 #highlight-tooltip-icon:hover + #highlight-tooltip {
-
-  display: flex;
+  display: block;
   visibility: visible;
   opacity: 1;
   justify-items: center;
   width: auto;
-  transition: visibility 0s, opacity 250ms ease-in-out;
+  transition: visibility 250ms, opacity 250ms ease-in-out;
 }
 
-#highlight-tooltip {
-  transition: visibility 0s, opacity 500ms ease-in-out;
+#transcript-tooltip-icon:hover + #transcript-tooltip {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  justify-items: center;
+  width: auto;
+  transition: visibility 250ms, opacity 250ms ease-in-out;
+}
+
+#highlight-tooltip, #transcript-tooltip {
+  transition: visibility 250ms, opacity 250ms ease-in-out;
   position: absolute;
-  background-color: #383838;
+  background-color: #606060;
   color: #eaeef2;
   border-radius: 3px;
   display: flex;
@@ -526,15 +540,16 @@ hr {
   height: fit-content;
   padding: 6px;
   margin-top: 6px;
-  z-index: 2;
+  z-index: 6;
 }
 
 
 
 .highlight-item {
+  display: flex;
   background-image: linear-gradient(to right, #eaeef2, #eaeef2, $accent-color, $accent-color);
   background-size: 300% auto;
-  transition: background-position 0.7s ease-in-out, color 0.7s ease-in-out;
+  transition: all 0.7s ease-in-out;
   background-position: left bottom;
   font-size: inherit;
   border-radius: 3px;
@@ -544,7 +559,7 @@ hr {
   margin-left: 4px;
   margin-right: 4px;
   margin-bottom: 0.4vh;
-  // width: auto;
+  z-index: 2;
   text-align: center;
   list-style-type: none;
   &:hover {
@@ -552,6 +567,12 @@ hr {
     background-position: right bottom;
     color: $text-color;
     transition: all  0.3s ease-in-out;
+    .highlight-item-time {
+      color: $text-color;
+    }
+    .highlight-item-content {
+      color: $text-color;
+    }
   }
 }
 
@@ -569,14 +590,32 @@ hr {
   text-align: center;
   list-style-type: none;
   transition: 300ms;
+  z-index: 2;
   &:hover {
+    z-index: 2;
     background-color: #fd0029;
     color: #eaeef2;
-    animation: shake 0.55s cubic-bezier(.36,.07,.19,.97) both;
+    animation: shake 0.55s ease-in-out both;
     transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
+    // backface-visibility: hidden;
+    // perspective: 1000px;
   }
+}
+
+.highlight-item-time {
+  float: left;
+  margin-right: 6px;
+  margin-left: 6px;
+  padding-right: 6px;
+  border-right: 1px solid #12121290;
+  color: $text-color;
+}
+
+.highlight-item-content {
+  text-align: left;
+  margin-right: 6px;
+  max-width: initial;
+  color: $text-color;
 }
 
 @keyframes shake {
@@ -597,6 +636,40 @@ hr {
   }
 }
 
+.transcript-search-item {
+  z-index: 5;
+  display: flex;
+  position: sticky;
+  margin-left: 4px;
+  margin-right: 4px;
+  background-color: #121212;
+  top: 0;
+}
+
+.transcript-search {
+  display: table-row;
+  background-color: #383838;
+  color: #eaeef2;
+  margin-bottom: 0.4vh;
+  font-size: inherit;
+  border-radius: 3px;
+  width: calc(100% - 8px);
+  border: none;
+  padding-left: 6px;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  z-index: 4;
+  &:focus {
+    outline: none;
+  }
+}
+
+.search-toggle {
+  filter: grayscale(100%);
+  font-size: 2.0rem;
+  display: table-row;
+  margin-top: -0.55vh;
+}
 
 
 @import 'node_modules/react-datepicker/src/stylesheets/datepicker.scss';
@@ -636,7 +709,21 @@ hr {
 
 .react-datepicker {
   border: none;
-  border-radius: 6px
+  border-radius: 6px;
+  
+  .react-datepicker__navigation {
+    .react-datepicker__navigation-icon {
+      &::before {
+        border-color: $text-color;
+        opacity: 60%;
+      }
+      &:hover {
+        &::before {
+          opacity: 100%;
+        }
+      }
+    }
+  }
 }
 
 .react-datepicker__month-container {
@@ -669,10 +756,9 @@ hr {
         color: #12121238;
       }
       &--selected {
-        background-color: #12121220;
+        background-color: #12121230;
         color: #121212;
         font-weight: bolder;
-        // text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
       }
       &--keyboard-selected {
         outline:0 !important;
@@ -680,6 +766,10 @@ hr {
         color: $text-color;
       }
     }
+  }
+
+  .react-datepicker__navigation-icon {
+    color: #fd0029;
   }
 
   .react-datepicker__month {

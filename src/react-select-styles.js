@@ -32,9 +32,11 @@ var colorStyles = {
   dropdownIndicator: base => ({
     ...base,
     color: hoverText,
-    // "&:hover": {
-    //   color: '#000000',
-    // }
+    opacity: '60%',
+    "&:hover": {
+      opacity: '100%',
+      color: hoverText,
+    }
   }),
   option: (base, {data, isDisabled, isFocused, isSelected}) => ({
     ...base,
