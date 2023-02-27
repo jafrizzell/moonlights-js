@@ -430,6 +430,7 @@ code {
 }
 
 .stats-box header {
+  cursor: default;
   background-color: $accent-color;
   color: $text-color;
   border-radius: 3px;
@@ -445,6 +446,7 @@ code {
 }
 
 .stats-box li {
+  cursor: default;
   background-color: #eaeef2;
   list-style-type: none;
   color: #121212;
@@ -557,6 +559,7 @@ hr {
 
 
 .highlight-item {
+  cursor: pointer;
   display: flex;
   background-image: linear-gradient(to right, #eaeef2, #eaeef2, $accent-color, $accent-color);
   background-size: 300% auto;
@@ -588,6 +591,7 @@ hr {
 }
 
 .highlight-item--invalid {
+  cursor: pointer;
   background-color: $accent-color;
   color: $text-color;
   font-size: inherit;
@@ -614,6 +618,7 @@ hr {
 }
 
 .highlight-item-time {
+  cursor: pointer;
   float: left;
   margin-right: 6px;
   margin-left: 6px;
@@ -623,6 +628,7 @@ hr {
 }
 
 .highlight-item-content {
+  cursor: pointer;
   text-align: left;
   margin-right: 6px;
   max-width: initial;
@@ -648,6 +654,7 @@ hr {
 }
 
 .transcript-search-item {
+  cursor: pointer;
   z-index: 5;
   display: flex;
   position: sticky;
@@ -666,6 +673,10 @@ hr {
   border-radius: 3px;
   width: calc(100% - 8px);
   border: none;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
   padding-left: 6px;
   padding-top: 1vh;
   padding-bottom: 1vh;
@@ -675,33 +686,51 @@ hr {
   }
 }
 
+.transcript-search-results {
+  background-color: #383838;
+  color: #eaeef290;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  // padding-bottom: 1vh;
+  font-size: inherit;
+  padding-top: 0.8vh;
+  padding-right: 4px;
+  margin-bottom: 4px;
+  min-width: fit-content;
+}
+
 .search-toggle {
   filter: grayscale(100%);
   font-size: 2.0rem;
   display: table-row;
   margin-top: -0.55vh;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 
 @import 'node_modules/react-datepicker/src/stylesheets/datepicker.scss';
 
 .react-datepicker__input-container { 
+  cursor: default;
   padding: 4px;
 }
 
 .react-datepicker__input-container input {
-    // height: 31.2px;
-    height: 40.2px;
-    padding-top: 0px;
-    // padding-bottom: 2px;
-    text-align: center;
-    font-size: inherit;
-    line-height: 1.2;
-    width: 120px;
-    border-width: 0px;
-    border-color: transparent;
-    background-color: #eaeef2;
-    border-radius: 3px;
+  cursor: default;
+  // height: 31.2px;
+  height: 40.2px;
+  padding-top: 0px;
+  // padding-bottom: 2px;
+  text-align: center;
+  font-size: inherit;
+  line-height: 1.2;
+  width: 120px;
+  border-width: 0px;
+  border-color: transparent;
+  background-color: #eaeef2;
+  border-radius: 3px;
   &:focus {
     outline:0 !important;
   }
@@ -763,6 +792,7 @@ hr {
         // text-shadow: none;
       }
       &--disabled:hover {
+        cursor: default;
         background-color: transparent;
         color: #12121238;
       }
@@ -784,6 +814,7 @@ hr {
   }
 
   .react-datepicker__month {
+    cursor: default;
     padding: 1rem 0;
     margin-top: 0px;
     padding-top: 0px;
@@ -794,6 +825,7 @@ hr {
   }
 
   .react-datepicker__month-text {
+    cursor: default;
     display: inline-block;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -824,9 +856,11 @@ hr {
     position: relative;
     .react-datepicker__current-month {
       color: $text-color;
+      cursor: default;
     }
     .react-datepicker__day-names {
       .react-datepicker__day-name {
+        cursor: default;
         color: $text-color;
       }
     }

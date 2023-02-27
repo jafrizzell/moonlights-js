@@ -131,9 +131,6 @@ function LegalPopup(props) {
             <br></br>
             <br></br>
             Your use of the Website is entirely at your own risk, and you assume full responsibility for any and all risks associated with the use of our Website. We reserve the right to modify, suspend, or discontinue any part of the Website at any time without prior notice.
-            <br></br>
-            <br></br>
-            Finally, we want to reiterate that the data shown on the Website is intended for entertainment purposes only.
           </p>
         </nav>
         <button 
@@ -564,10 +561,15 @@ class App extends React.Component {
           search.id = 'transcript-search';
           search.style.display = 'block';
           search.className = 'transcript-search';
-          search.placeholder = 'Search transcript'
-          search.addEventListener('input', this.searchTranscript)
-          t_search.appendChild(search)
-          ul.appendChild(t_search) 
+          search.placeholder = 'Search transcript';
+          search.addEventListener('input', this.searchTranscript);
+          t_search.appendChild(search);
+          var num_results = document.createElement('span');
+          num_results.className = 'transcript-search-results';
+          num_results.id = 'transcript-results'
+          num_results.appendChild(document.createTextNode(`(${data.transcript.length} results)`));
+          t_search.appendChild(num_results);
+          ul.appendChild(t_search);
 
           for (let k = 0; k < data.transcript.length; k++) {
             li = document.createElement('li');
@@ -730,13 +732,16 @@ class App extends React.Component {
   searchTranscript(term) {
     var search_phrase = term.target.value.toLowerCase();
     var ul_items = document.getElementById('transcript-section').childNodes;
+    var show_count = 0;
     for (let l = 1; l < ul_items.length; l++) {
       if (!ul_items[l].innerText.toLowerCase().includes(search_phrase)) {
         ul_items[l].style.display = 'none';
       } else {
+        show_count += 1
         ul_items[l].style.display = 'flex';
       }
     }
+    document.getElementById('transcript-results').innerText = `(${show_count} results)`
   }
 
   searchHighlight(term) {
