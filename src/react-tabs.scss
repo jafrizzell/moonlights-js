@@ -22,15 +22,12 @@
       padding-top: 2vh;
       padding-bottom: 2vh;
       margin-bottom: 0px;
-    //   background-color: index.$darker-accent-color;
       border: 2px solid index.$accent-color;
       color: #eaeef2;
-      transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;;
-    //   transition: background-color color 0.7s ease-in-out;
-    //   opacity: 80%;
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;;
       #transcript-tooltip-icon, #highlight-tooltip-icon {
         color: #eaeef2;
-        transition: all 0.7s ease-in-out;
+        transition: all 0.3s ease-in-out;
       }
   
       &--selected {
@@ -41,13 +38,13 @@
         padding-bottom: calc(2vh + 8px);
         border-bottom-left-radius: 0px;
         border-bottom-right-radius: 0px;
-        transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
         // transition: background-color color 0.7s easeS-in-out;
         color: index.$text-color;
         opacity: 100%;
         #transcript-tooltip-icon, #highlight-tooltip-icon {
             color: #121212;
-            transition: all 0.7s ease-in-out;
+            transition: all 0.3s ease-in-out;
           }
       }
   

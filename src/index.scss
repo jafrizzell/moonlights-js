@@ -123,6 +123,21 @@ code {
   }
 }
 
+.legal-popup-text {
+  @media (min-width: $breakpoint) {
+    width: 50vw;
+  }
+  background-color: hsl(0, 0%, 65%);
+  text-align: justify;
+  height: 30vh;
+  overflow-y: scroll;
+  padding-left: 24px;
+  margin-left: 24px;
+  margin-bottom: 24px;
+  padding-right: 24px;
+  margin-right: 24px;
+}
+
 .menu-bar {
   z-index: 1;
   display: flex;
@@ -194,26 +209,23 @@ code {
 
 .menu-bar-item-bg {
   background-image: url(../public/background_icon.png);
-  background-size: 52.2px 52.2px; // height = width * n_items + 8px
-  // background-repeat: no-repeat;
-  // background-position: 2px 1px;
+  background-size: 52.2px 52.2px;
   border-radius: 6px;
-  // background-image: linear-gradient(to right, #ff0000, #ff0000, #377eb8, #377eb8, #b3e900, #b3e900);
   background-origin: border-box;
   background-clip: content-box, border-box;
   margin-top: 12px;
   margin-right: 12px;
-  // padding: 0px;
-  // margin-left: 4px;
 }
 
 
 
 .menu-bar-items {
   display: flex;
+  flex: 1;
   flex-direction: row;
+  height: auto;
   @media (min-width: $breakpoint) {
-    flex-direction: column;;
+    flex-direction: column;
   }
   margin-left: $emote-buffer;
 }
@@ -492,7 +504,6 @@ hr {
   padding-top: 2vh;
   padding-bottom: 2vh;
   margin-bottom: 0px;
-  // width: min-content;
   &:focus {
     outline:0 !important;
   }

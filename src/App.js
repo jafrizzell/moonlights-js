@@ -7,13 +7,6 @@ import Select from 'react-select';
 import Collapse from '@material-ui/core/Collapse';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import './react-tabs.scss';
-
-// import PropTypes from 'prop-types';
-// import Tabs from '@mui/material/Tabs';
-// import Tab from '@mui/material/Tab';
-// import Typography from '@mui/material/Typography';
-// import Box from '@mui/material/Box';
-
 import "react-datepicker/dist/react-datepicker.css";
 import "./tags.scss";
 import options from "./chart-options.js"
@@ -56,19 +49,18 @@ function adjust(color, amount) {
 
 function WelcomePopup(props) {
   return (
-    <div id='welcomePopup' className='welcomePopup' style={{'visibility': props.visibible}}>
+    <div id='welcomePopup' className='welcomePopup' style={{'visibility': props.visible}}>
       <div>
         <h1>Welcome to Twitchlights!</h1>
         <h2>Here are a few tips to help you get the most out of this dashboard</h2>
         <nav>
           <ol>
-            <li  style={{'fontWeight': 'bold'}}>Select top used emotes, or search for anything you are interested in!
+            <li style={{'fontWeight': 'bold'}}>Select top used emotes, or search for anything you are interested in!
               <ul>
                 <br></br>
                 <li>Want to find when a song was played? Try searching the name of the song - it might show up on the graph!</li>
                 <br></br>
                 <li>Dev tip #1: Search for .* to see all chat messages</li>
-                {/* <li>Dev tip #2: Use the form X|Y to search for messages with X or Y</li> */}
               </ul>
               </li>
             <br></br>
@@ -94,7 +86,7 @@ function WelcomePopup(props) {
           onClick={() => document.getElementById('welcomePopup').style.visibility = 'hidden'}>
             Let's Go!
         </button>
-        <hr style={{'paddingRight': '2px', 'border': '1px solid #12121290', 'animation': 'rainbow-border 5s linear infinite'}}></hr>
+        <hr style={{'paddingRight': '2px', 'border': '1px solid #12121290'}}></hr>
         <h4>
           Made by Me actually | Discord:&nbsp;
           <a href='https://www.discord.com/users/151913358889713667'
@@ -110,11 +102,62 @@ function WelcomePopup(props) {
 function Popup(props) {
   const isFirstVisit = props.firstVisit;
   if (isFirstVisit ==='false') {
-    return <WelcomePopup visibible={'hidden'}/>;
+    return <WelcomePopup visible={'hidden'}/>;
   }
   if (isFirstVisit) {
     localStorage.setItem('firstVisit', 'false')
-    return <WelcomePopup visibible={'visible'}/>;
+    return <WelcomePopup visible={'visible'}/>;
+  }
+}
+
+function LegalPopup(props) {
+  return (
+    <div id='legalPopup' className='welcomePopup' style={{'visibility': props.visible}}>
+      <div>
+        <h1>Legal Disclaimer</h1>
+        <hr style={{'paddingRight': '2px', 'border': '1px solid #12121290'}}></hr>
+        <nav className='legal-popup-text'>
+          <p>
+            Twitchlights.com ("the Website") aggregates and displays chat messages sent during live streams on Twitch.tv, and provides users with trends of the chatroom. Additionally, we provide transcriptions of livestreams. These transcriptions are imperfect and do not reflect the entirety of what was said during the stream.
+            <br></br>
+            <br></br>
+            We take user privacy very seriously and are fully compliant with EU General Data Protection Regulations (GDPR) laws. As such, any user who wishes to have their data anonymized may submit a request to us via Discord DM to "@Me actually#8806" via the links provided on the Website. Upon receiving the request, we will make reasonable efforts to scrub the user's username from our database as soon as possible.
+            <br></br>
+            <br></br>
+            Please note that the data shown on the Website is intended for entertainment purposes only. It should not be relied upon as a reliable source of information. While we strive to provide accurate and up-to-date information, we cannot guarantee the accuracy or completeness of the information displayed on the Website. Users should refer to the video on demand (VOD) found on Twitch.tv for an accurate reflection of the events of the stream. Our transcriptions are provided solely as a convenience to users and should not be relied upon as a substitute for watching the VOD.
+            <br></br>
+            <br></br>
+            By using the Website, you acknowledge and agree that we shall not be liable for any direct, indirect, incidental, consequential, or exemplary damages, including but not limited to damages for loss of profits, goodwill, use, data, or other intangible losses (even if we have been advised of the possibility of such damages), resulting from the use or inability to use the Website or any content or services provided through it.
+            <br></br>
+            <br></br>
+            Your use of the Website is entirely at your own risk, and you assume full responsibility for any and all risks associated with the use of our Website. We reserve the right to modify, suspend, or discontinue any part of the Website at any time without prior notice.
+            <br></br>
+            <br></br>
+            Finally, we want to reiterate that the data shown on the Website is intended for entertainment purposes only.
+          </p>
+        </nav>
+        <button 
+          onClick={() => document.getElementById('legalPopup').style.visibility = 'hidden'}>
+            I understand
+        </button>
+        <hr style={{'paddingRight': '2px', 'border': '1px solid #12121290', 'animation': 'rainbow-border 5s linear infinite'}}></hr>
+        <h4>
+          Submit GDPR requests via Discord:&nbsp;
+          <a href='https://www.discord.com/users/151913358889713667'
+            target="_blank" 
+            rel="noopener noreferrer">Me actually#8806
+          </a>
+        </h4>
+      </div>
+    </div>
+  )
+}
+
+function DisclaimerPopup(props) {
+  if (props.show) {
+    return <LegalPopup visible={'visible'}/>
+  } else {
+    return <LegalPopup visible={'hidden'}/>
   }
 }
 
@@ -652,9 +695,6 @@ class App extends React.Component {
     }
     const clickedTime = xLoc.split(' ')[0].split(':');
     var adjTime = (+clickedTime[0]) * 60 * 60 + (+clickedTime[1]) * 60 + (+clickedTime[2])
-    if (event.target.parentElement.id.includes('tran')) {
-      adjTime += 6;
-    }
     try {
       this.player.onReady(() => {
         this.player.seekTo(adjTime, "seconds");
@@ -688,10 +728,10 @@ class App extends React.Component {
   }
 
   searchTranscript(term) {
-    var search_phrase = term.target.value;
+    var search_phrase = term.target.value.toLowerCase();
     var ul_items = document.getElementById('transcript-section').childNodes;
     for (let l = 1; l < ul_items.length; l++) {
-      if (!ul_items[l].innerText.includes(search_phrase)) {
+      if (!ul_items[l].innerText.toLowerCase().includes(search_phrase)) {
         ul_items[l].style.display = 'none';
       } else {
         ul_items[l].style.display = 'flex';
@@ -700,10 +740,10 @@ class App extends React.Component {
   }
 
   searchHighlight(term) {
-    var search_phrase = term.target.value;
+    var search_phrase = term.target.value.toLowerCase();
     var ul_items = document.getElementById('highlights-section').childNodes;
     for (let l = 1; l < ul_items.length; l++) {
-      if (!ul_items[l].innerText.includes(search_phrase)) {
+      if (!ul_items[l].innerText.toLowerCase().includes(search_phrase)) {
         ul_items[l].style.display = 'none';
       } else {
         ul_items[l].style.display = 'flex';
@@ -757,6 +797,7 @@ class App extends React.Component {
     return (
       <div className='page'>
         <Popup firstVisit={this.state.firstVisit}/>
+        <DisclaimerPopup show={false}/>
         <div id='menu-bar' className='menu-bar'>
           <img src='icon_3color_2.png' alt='Twitchlights logo' className='menu-bar-icon'></img>
           <div id='menu-bar-items' className='menu-bar-items'>
@@ -766,9 +807,16 @@ class App extends React.Component {
                 id='menu-bar-help-1' 
                 className='menu-bar-help' 
                 alt='help button' 
-                // onMouseOver={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon_inv.png')}, 120)}}
-                // onMouseOut={() => {setTimeout(() => {document.getElementById('menu-bar-help-1').setAttribute('src', 'help_icon.png')}, 95)}}
                 onClick={() => document.getElementById('welcomePopup').style.visibility = 'visible'}
+              ></img>
+            </div>    
+            <div className='menu-bar-item-bg'>
+              <img 
+                src='security_policy.png' 
+                id='menu-bar-help-2' 
+                className='menu-bar-help' 
+                alt='privacy policy button' 
+                onClick={() => document.getElementById('legalPopup').style.visibility = 'visible'}
               ></img>
             </div>         
           </div>
