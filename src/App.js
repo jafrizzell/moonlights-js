@@ -121,7 +121,7 @@ function LegalPopup(props) {
             Twitchlights.com ("the Website") aggregates and displays chat messages sent during live streams on Twitch.tv, and provides users with trends of the chatroom. Additionally, we provide transcriptions of livestreams. These transcriptions are imperfect and do not reflect the entirety of what was said during the stream.
             <br></br>
             <br></br>
-            We take user privacy very seriously and are fully compliant with EU General Data Protection Regulations (GDPR) laws. As such, any user who wishes to have their data anonymized may submit a request to us via Discord DM to "@Me actually#8806" via the links provided on the Website. Upon receiving the request, we will make reasonable efforts to scrub the user's username from our database as soon as possible.
+            We take user privacy very seriously and are fully compliant with EU General Data Protection Regulations (GDPR) laws. As such, any user who wishes to have their data anonymized may submit a request to us via Discord DM to "@Me actually#8806" or email to gdpr@twitchlights.com via the links provided on the Website. Upon receiving the request, we will make reasonable efforts to scrub the user's username from our database as soon as possible. Please provide your Twitch display name in the request to expedite the process. 
             <br></br>
             <br></br>
             Please note that the data shown on the Website is intended for entertainment purposes only. It should not be relied upon as a reliable source of information. While we strive to provide accurate and up-to-date information, we cannot guarantee the accuracy or completeness of the information displayed on the Website. Users should refer to the video on demand (VOD) found on Twitch.tv for an accurate reflection of the events of the stream. Our transcriptions are provided solely as a convenience to users and should not be relied upon as a substitute for watching the VOD.
@@ -144,6 +144,8 @@ function LegalPopup(props) {
             target="_blank" 
             rel="noopener noreferrer">Me actually#8806
           </a>
+          &nbsp;or email:&nbsp;
+          <a href="mailto:gdpr@twitchlights.com?subject=GDPR%20Anonymization%20Request&body=Twitch%20Display%20Name:%20">gdpr@twitchlights.com</a>
         </h4>
       </div>
     </div>
