@@ -6,17 +6,17 @@ This project replaces the previous version of [MOONLIGHTS](https://github.com/ja
 
 TWITCHLIGHTS is a Twitch Chat analytics tool that tracks the usage of any emote, phrase, or sentence throughout a twitch stream.
 
-## New Features (2023-01-16)
-- Allow for multiple streamers to be hosted on the same platform.
-- Clicking on the graph will seek to that timestamp in the embedded VOD.
-- UI improvements:
-    - Datepicker dropdown
-    - Consistent colors in the chart
+## New Features (2023-02-25)
+ - **NEW!** Skip through the boring parts with the Stream Highlights tab!
+ - **NEW!** Search through a transcript of the stream, produced by OpenAI's Whisper Model
+ - Added welcome popup screen with basic user guide
+ - Site remembers which streamer you were previously looking at when reloading the page
+ - Improved css styling
 
 ## Planned Features
-- UI improvements, specifically in:
-    - (Potentitially) Collapsable Twitch player
+- Wider release of stream transcription
 - Auto-refresh graph during livestreams
+- Graph view options
 
 ## History
 
@@ -24,6 +24,11 @@ TWITCHLIGHTS is a Twitch Chat analytics tool that tracks the usage of any emote,
 - Embedded Twitch.tv player
 - Improved load and response times
 - Hosted on DigitalOcean
+- Allow for multiple streamers to be hosted on the same platform.
+- Clicking on the graph will seek to that timestamp in the embedded VOD.
+- UI improvements:
+    - Datepicker dropdown
+    - Consistent colors in the chart
 
 ## Nerd Stuff
 
