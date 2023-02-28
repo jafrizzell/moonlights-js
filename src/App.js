@@ -9,8 +9,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import options from "./chart-options.js"
 import colorStyles from "./react-select-styles.js"
 import './react-tabs.scss';
-import "react-datepicker/dist/react-datepicker.css";
 import "./tags.scss";
+import "react-datepicker/dist/react-datepicker.css";
 
 import {
   Chart as ChartJS,
