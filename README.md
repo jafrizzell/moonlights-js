@@ -1,10 +1,8 @@
 # TWITCHLIGHTS
 
-This project replaces the previous version of [MOONLIGHTS](https://github.com/jafrizzell/moonlights) which was written in python.
-
 ## Overview
 
-TWITCHLIGHTS is a Twitch Chat analytics tool that tracks the usage of any emote, phrase, or sentence throughout a twitch stream.
+[Twitchlights](https://twitchlights.com) is a Twitch Chat analytics tool that tracks the usage of any emote, phrase, or sentence throughout a twitch stream. It also uses the chat data to generate highlights. It is configured to transcribe streams live, although the computational power required for that prevents it from being a wide-spread feature.
 
 ## New Features (2023-02-25)
  - **NEW!** Skip through the boring parts with the Stream Highlights tab!
