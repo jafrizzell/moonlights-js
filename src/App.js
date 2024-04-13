@@ -626,15 +626,15 @@ class App extends React.Component {
         xLoc = loc.target.innerText
       }
     }
-    
-    if (this.state.xlabels.includes(xLoc)) {
-      if (xLoc.split(':')[2] === '00') {
-        xLoc = xLoc.slice(0, -2).concat(parseInt(xLoc.split(':')[2])+1)
-      } else {
-        xLoc = xLoc.slice(0, -2).concat(parseInt(xLoc.split(':')[2])-1)
+    xLoc = xLoc+'.5'
+    // if (this.state.xlabels.includes(xLoc)) {
+    //   if (xLoc.split(':')[2] === '00') {
+    //     xLoc = xLoc.slice(0, -2).concat(parseInt(xLoc.split(':')[2])+1)
+    //   } else {
+    //     xLoc = xLoc.slice(0, -2).concat(parseInt(xLoc.split(':')[2])-1)
 
-      }
-    }
+    //   }
+    // }
     if (TESTING) {
       yMax = ChartJS.instances['1'].scales.yAxes.end;
     } else {
@@ -882,7 +882,7 @@ class App extends React.Component {
                 id='vodToggle'
                 className='collapseButton'
                 onClick={() => {
-
+                  
                   if (this.state.expanded) {
                     if (window.innerWidth > 992) {
                       document.getElementById('graph').style.height='30vh'
