@@ -37,6 +37,7 @@ ChartJS.register(
 const TESTING = false;
 
 const BASE_URL = TESTING ? 'http://localhost:6969' : 'https://twitchlights.com:6969'
+const tz = new Date().getTimezoneOffset() / 60;
 
 export var pageTheme = '#adace5';
 export var hoverText = '#121212';
@@ -426,6 +427,9 @@ class App extends React.Component {
   };
 
   setDate(d) {
+    console.log(`old date ${d}`)
+    d = new Date(d.setHours(d.getHours() - tz))
+    console.log(`new date ${d}`)
     if (new Date() - d > this.state.vod_life * 24 * 60 * 60 * 1000) {
       document.getElementById('vodToggle').disabled = true;
       document.getElementById('vodToggle').innerText = 'This vod is no longer available on twitch.tv. Vods are automatically deleted after 14 days (60 days for Twitch Partners)'
@@ -849,7 +853,7 @@ class App extends React.Component {
                 <div className="dpicker" style={{'zIndex': 100}}>
                   <DatePicker
                     selected={this.state.date.date}
-                    onChange={d => this.setDate(d)}
+                    onChange={d => this.setDate(new Date(d.setHours(0)))}
                     includeDates={this.state.validDates}
                   />
                 </div>
