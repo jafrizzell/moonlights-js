@@ -427,9 +427,7 @@ class App extends React.Component {
   };
 
   setDate(d) {
-    console.log(`old date ${d}`)
-    d = new Date(d.setHours(d.getHours() - tz))
-    console.log(`new date ${d}`)
+
     if (new Date() - d > this.state.vod_life * 24 * 60 * 60 * 1000) {
       document.getElementById('vodToggle').disabled = true;
       document.getElementById('vodToggle').innerText = 'This vod is no longer available on twitch.tv. Vods are automatically deleted after 14 days (60 days for Twitch Partners)'
@@ -441,9 +439,11 @@ class App extends React.Component {
     }
     let vod;
     let dates_index;
-
+    this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null})
+    console.log(vod)
+    d = new Date(d.setHours(d.getHours()-tz))
     if (d) {
-      this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]; dates_index = idx} return null});
+      // this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]; dates_index = idx} return null});
       this.setState({
         date: {date: d, id: vod},
         emotes: [],
