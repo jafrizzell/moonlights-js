@@ -440,7 +440,7 @@ class App extends React.Component {
     let vod;
     let dates_index;
     this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]} return null})
-    console.log(vod)
+
     d = new Date(d.setHours(d.getHours()-tz))
     if (d) {
       // this.state.validDates.findIndex((val, idx) => {if (val.toISOString() === d.toISOString()) {vod = this.state.validIDs[idx]; dates_index = idx} return null});
